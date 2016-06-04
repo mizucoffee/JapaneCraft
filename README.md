@@ -1,5 +1,5 @@
 # JapaneCraft
-JapaneCraft is Japanese input support Mod!
+JapaneCraft is Japanese input support Mod!   
 JapaneCraftは日本語入力をサポートするmodです。
 
 ## 概要
