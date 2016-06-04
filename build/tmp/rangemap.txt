@@ -1,0 +1,23 @@
+Symbol range map extraction starting
+Processing 1 files
+processing com/example/examplemod/ExampleMod.java
+@|com/example/examplemod/ExampleMod.java|8|30|com.example.examplemod|package|com.example.examplemod|(file)
+Class Start: com.example.examplemod.ExampleMod
+   @|com/example/examplemod/ExampleMod.java|343|349|String|class|java.lang.String
+   @|com/example/examplemod/ExampleMod.java|350|355|MODID|field|com.example.examplemod.ExampleMod|MODID|
+   @|com/example/examplemod/ExampleMod.java|396|402|String|class|java.lang.String
+   @|com/example/examplemod/ExampleMod.java|403|410|VERSION|field|com.example.examplemod.ExampleMod|VERSION|
+   Method Start: init(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V
+      @|com/example/examplemod/ExampleMod.java|459|463|init|method|com.example.examplemod.ExampleMod|init|(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V
+      @|com/example/examplemod/ExampleMod.java|464|486|FMLInitializationEvent|class|net.minecraftforge.fml.common.event.FMLInitializationEvent
+      @|com/example/examplemod/ExampleMod.java|487|492|event|param|com.example.examplemod.ExampleMod|init|(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V|event|0
+      @|com/example/examplemod/ExampleMod.java|531|537|System|class|java.lang.System
+      @|com/example/examplemod/ExampleMod.java|538|541|out|field|java.lang.System|out
+      @|com/example/examplemod/ExampleMod.java|542|549|println|method|java.io.PrintStream|println|(Ljava/lang/String;)V
+      @|com/example/examplemod/ExampleMod.java|567|573|Blocks|class|net.minecraft.init.Blocks
+      @|com/example/examplemod/ExampleMod.java|574|578|dirt|field|net.minecraft.init.Blocks|dirt
+      @|com/example/examplemod/ExampleMod.java|579|597|getUnlocalizedName|method|net.minecraft.block.Block|getUnlocalizedName|()Ljava/lang/String;
+   Method End: init(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V
+Class End  : com.example.examplemod.ExampleMod
+endProcessing com/example/examplemod/ExampleMod.java
+
