@@ -32987,14 +32987,67 @@ RENAME MAP: param net/minecraft/world/storage/WorldInfo/WorldInfo (Lnet/minecraf
 RENAME MAP: param net/minecraft/world/storage/WorldInfo/WorldInfo (Lnet/minecraft/world/WorldSettings;Ljava/lang/String;)V 0 -> p_i2158_1_
 RENAME MAP: param net/minecraft/world/storage/WorldInfo/WorldInfo (Lnet/minecraft/world/WorldSettings;Ljava/lang/String;)V 1 -> p_i2158_2_
 RENAME MAP: param net/minecraft/world/storage/WorldInfo/WorldInfo (Lnet/minecraft/world/storage/WorldInfo;)V 0 -> p_i2159_1_
-Start Processing: com/example/examplemod/ExampleMod.java
-[method, com/example/examplemod/ExampleMod/init, (Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V]
+Start Processing: com/kawakawaplanning/japanecraft/JapaneCraftMod.java
+[method, com/kawakawaplanning/japanecraft/JapaneCraftMod/init, (Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V]
 No rename for class net/minecraftforge/fml/common/event/FMLInitializationEvent
-[method, java/io/PrintStream/println, (Ljava/lang/String;)V]
-Rename class net/minecraft/init/Blocks[567,573]::Blocks->Blocks
-Rename field net/minecraft/init/Blocks/dirt[574,578]::dirt->field_150346_d
-Rename method net/minecraft/block/Block/getUnlocalizedName ()Ljava/lang/String;[589,607]::getUnlocalizedName->func_149739_a
-Import: net.minecraft.init.Blocks
+No rename for class net/minecraftforge/common/MinecraftForge
+No rename for field net/minecraftforge/common/MinecraftForge/EVENT_BUS
+[method, net/minecraftforge/fml/common/eventhandler/EventBus/register, (Ljava/lang/Object;)V]
+No rename for method net/minecraftforge/fml/common/eventhandler/EventBus/register (Ljava/lang/Object;)V
+[method, com/kawakawaplanning/japanecraft/JapaneCraftMod/onServerChat, (Lnet/minecraftforge/event/ServerChatEvent;)V]
+No rename for class net/minecraftforge/event/ServerChatEvent
+[method, com/kawakawaplanning/japanecraft/Kana/setLine, (Ljava/lang/String;)V]
+No rename for field net/minecraftforge/event/ServerChatEvent/message
+[method, com/kawakawaplanning/japanecraft/Kana/convert, ()V]
+Rename class net/minecraft/util/ChatComponentText[1202,1219]::ChatComponentText->ChatComponentText
+Rename class net/minecraft/util/ChatComponentText[1231,1248]::ChatComponentText->ChatComponentText
+No rename for field net/minecraftforge/event/ServerChatEvent/username
+No rename for field net/minecraftforge/event/ServerChatEvent/message
+[method, com/kawakawaplanning/japanecraft/Kana/getLine, ()Ljava/lang/String;]
+No rename for class net/minecraftforge/fml/common/FMLCommonHandler
+[method, net/minecraftforge/fml/common/FMLCommonHandler/instance, ()Lnet/minecraftforge/fml/common/FMLCommonHandler;]
+No rename for method net/minecraftforge/fml/common/FMLCommonHandler/instance ()Lnet/minecraftforge/fml/common/FMLCommonHandler;
+[method, net/minecraftforge/fml/common/FMLCommonHandler/getMinecraftServerInstance, ()Lnet/minecraft/server/MinecraftServer;]
+No rename for method net/minecraftforge/fml/common/FMLCommonHandler/getMinecraftServerInstance ()Lnet/minecraft/server/MinecraftServer;
+Rename method net/minecraft/server/MinecraftServer/getConfigurationManager ()Lnet/minecraft/server/management/ServerConfigurationManager;[1391,1414]::getConfigurationManager->func_71203_ab
+Rename method net/minecraft/server/management/ServerConfigurationManager/sendChatMsg (Lnet/minecraft/util/IChatComponent;)V[1407,1418]::sendChatMsg->func_148539_a
+[method, net/minecraftforge/fml/common/eventhandler/Event/setCanceled, (Z)V]
+No rename for method net/minecraftforge/fml/common/eventhandler/Event/setCanceled (Z)V
+[method, com/kawakawaplanning/japanecraft/JapaneCraftMod/netCheckHandler, (Ljava/util/Map;Lnet/minecraftforge/fml/relauncher/Side;)Z]
+No rename for class net/minecraftforge/fml/relauncher/Side
+[method, net/minecraftforge/fml/relauncher/Side/isServer, ()Z]
+No rename for method net/minecraftforge/fml/relauncher/Side/isServer ()Z
+Import: net.minecraft.util.ChatComponentText
 Adding 0 imports
-End  Processing: com/example/examplemod/ExampleMod.java
+End  Processing: com/kawakawaplanning/japanecraft/JapaneCraftMod.java
+
+Start Processing: com/kawakawaplanning/japanecraft/Kana.java
+[method, com/kawakawaplanning/japanecraft/Kana/Kana, ()V]
+FOUND CONSTR method com/kawakawaplanning/japanecraft/Kana/Kana ()V com/kawakawaplanning/japanecraft/Kana
+[method, com/kawakawaplanning/japanecraft/Kana/setLine, (Ljava/lang/String;)V]
+[method, com/kawakawaplanning/japanecraft/Kana/getLine, ()Ljava/lang/String;]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/convert, ()V]
+[method, java/lang/CharSequence/length, ()I]
+[method, java/lang/String/substring, (II)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, java/lang/Character/isLetter, (C)Z]
+[method, java/lang/CharSequence/charAt, (I)C]
+[method, java/lang/String/equals, (Ljava/lang/Object;)Z]
+[method, com/kawakawaplanning/japanecraft/Kana/R2K, (Ljava/lang/String;I)Ljava/lang/String;]
+End  Processing: com/kawakawaplanning/japanecraft/Kana.java
 

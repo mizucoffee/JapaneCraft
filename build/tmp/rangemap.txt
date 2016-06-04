@@ -1,23 +1,151 @@
 Symbol range map extraction starting
-Processing 1 files
-processing com/example/examplemod/ExampleMod.java
-@|com/example/examplemod/ExampleMod.java|8|30|com.example.examplemod|package|com.example.examplemod|(file)
-Class Start: com.example.examplemod.ExampleMod
-   @|com/example/examplemod/ExampleMod.java|343|349|String|class|java.lang.String
-   @|com/example/examplemod/ExampleMod.java|350|355|MODID|field|com.example.examplemod.ExampleMod|MODID|
-   @|com/example/examplemod/ExampleMod.java|396|402|String|class|java.lang.String
-   @|com/example/examplemod/ExampleMod.java|403|410|VERSION|field|com.example.examplemod.ExampleMod|VERSION|
+Processing 2 files
+processing com/kawakawaplanning/japanecraft/JapaneCraftMod.java
+@|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|8|40|com.kawakawaplanning.japanecraft|package|com.kawakawaplanning.japanecraft|(file)
+Class Start: com.kawakawaplanning.japanecraft.JapaneCraftMod
+   @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|759|765|String|class|java.lang.String
+   @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|766|771|MODID|field|com.kawakawaplanning.japanecraft.JapaneCraftMod|MODID|
+   @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|813|819|String|class|java.lang.String
+   @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|820|827|VERSION|field|com.kawakawaplanning.japanecraft.JapaneCraftMod|VERSION|
+   @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|850|858|isServer|field|com.kawakawaplanning.japanecraft.JapaneCraftMod|isServer|
    Method Start: init(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V
-      @|com/example/examplemod/ExampleMod.java|459|463|init|method|com.example.examplemod.ExampleMod|init|(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V
-      @|com/example/examplemod/ExampleMod.java|464|486|FMLInitializationEvent|class|net.minecraftforge.fml.common.event.FMLInitializationEvent
-      @|com/example/examplemod/ExampleMod.java|487|492|event|param|com.example.examplemod.ExampleMod|init|(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V|event|0
-      @|com/example/examplemod/ExampleMod.java|531|537|System|class|java.lang.System
-      @|com/example/examplemod/ExampleMod.java|538|541|out|field|java.lang.System|out
-      @|com/example/examplemod/ExampleMod.java|542|549|println|method|java.io.PrintStream|println|(Ljava/lang/String;)V
-      @|com/example/examplemod/ExampleMod.java|567|573|Blocks|class|net.minecraft.init.Blocks
-      @|com/example/examplemod/ExampleMod.java|574|578|dirt|field|net.minecraft.init.Blocks|dirt
-      @|com/example/examplemod/ExampleMod.java|579|597|getUnlocalizedName|method|net.minecraft.block.Block|getUnlocalizedName|()Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|902|906|init|method|com.kawakawaplanning.japanecraft.JapaneCraftMod|init|(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|907|929|FMLInitializationEvent|class|net.minecraftforge.fml.common.event.FMLInitializationEvent
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|930|935|event|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|init|(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V|event|0
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|947|961|MinecraftForge|class|net.minecraftforge.common.MinecraftForge
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|962|971|EVENT_BUS|field|net.minecraftforge.common.MinecraftForge|EVENT_BUS
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|972|980|register|method|net.minecraftforge.fml.common.eventhandler.EventBus|register|(Ljava/lang/Object;)V
    Method End: init(Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;)V
-Class End  : com.example.examplemod.ExampleMod
-endProcessing com/example/examplemod/ExampleMod.java
+   Method Start: onServerChat(Lnet/minecraftforge/event/ServerChatEvent;)V
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1031|1043|onServerChat|method|com.kawakawaplanning.japanecraft.JapaneCraftMod|onServerChat|(Lnet/minecraftforge/event/ServerChatEvent;)V
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1044|1059|ServerChatEvent|class|net.minecraftforge.event.ServerChatEvent
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1060|1065|event|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|onServerChat|(Lnet/minecraftforge/event/ServerChatEvent;)V|event|0
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1081|1089|isServer|field|com.kawakawaplanning.japanecraft.JapaneCraftMod|isServer
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1105|1109|Kana|class|com.kawakawaplanning.japanecraft.Kana
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1118|1122|Kana|class|com.kawakawaplanning.japanecraft.Kana
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1140|1147|setLine|method|com.kawakawaplanning.japanecraft.Kana|setLine|(Ljava/lang/String;)V
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1148|1153|event|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|onServerChat|(Lnet/minecraftforge/event/ServerChatEvent;)V|event|0
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1154|1161|message|field|net.minecraftforge.event.ServerChatEvent|message
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1178|1185|convert|method|com.kawakawaplanning.japanecraft.Kana|convert|()V
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1202|1219|ChatComponentText|class|net.minecraft.util.ChatComponentText
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1231|1248|ChatComponentText|class|net.minecraft.util.ChatComponentText
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1255|1260|event|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|onServerChat|(Lnet/minecraftforge/event/ServerChatEvent;)V|event|0
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1261|1269|username|field|net.minecraftforge.event.ServerChatEvent|username
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1279|1284|event|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|onServerChat|(Lnet/minecraftforge/event/ServerChatEvent;)V|event|0
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1285|1292|message|field|net.minecraftforge.event.ServerChatEvent|message
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1304|1311|getLine|method|com.kawakawaplanning.japanecraft.Kana|getLine|()Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1334|1350|FMLCommonHandler|class|net.minecraftforge.fml.common.FMLCommonHandler
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1351|1359|instance|method|net.minecraftforge.fml.common.FMLCommonHandler|instance|()Lnet/minecraftforge/fml/common/FMLCommonHandler;
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1362|1388|getMinecraftServerInstance|method|net.minecraftforge.fml.common.FMLCommonHandler|getMinecraftServerInstance|()Lnet/minecraft/server/MinecraftServer;
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1391|1414|getConfigurationManager|method|net.minecraft.server.MinecraftServer|getConfigurationManager|()Lnet/minecraft/server/management/ServerConfigurationManager;
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1417|1428|sendChatMsg|method|net.minecraft.server.management.ServerConfigurationManager|sendChatMsg|(Lnet/minecraft/util/IChatComponent;)V
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1449|1454|event|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|onServerChat|(Lnet/minecraftforge/event/ServerChatEvent;)V|event|0
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1455|1466|setCanceled|method|net.minecraftforge.fml.common.eventhandler.Event|setCanceled|(Z)V
+   Method End: onServerChat(Lnet/minecraftforge/event/ServerChatEvent;)V
+   Method Start: netCheckHandler(Ljava/util/Map;Lnet/minecraftforge/fml/relauncher/Side;)Z
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1535|1550|netCheckHandler|method|com.kawakawaplanning.japanecraft.JapaneCraftMod|netCheckHandler|(Ljava/util/Map;Lnet/minecraftforge/fml/relauncher/Side;)Z
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1555|1561|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1563|1569|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1551|1554|Map|class|java.util.Map
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1571|1575|mods|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|netCheckHandler|(Ljava/util/Map;Lnet/minecraftforge/fml/relauncher/Side;)Z|mods|0
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1577|1581|Side|class|net.minecraftforge.fml.relauncher.Side
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1582|1586|side|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|netCheckHandler|(Ljava/util/Map;Lnet/minecraftforge/fml/relauncher/Side;)Z|side|1
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1598|1606|isServer|field|com.kawakawaplanning.japanecraft.JapaneCraftMod|isServer
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1609|1613|side|param|com.kawakawaplanning.japanecraft.JapaneCraftMod|netCheckHandler|(Ljava/util/Map;Lnet/minecraftforge/fml/relauncher/Side;)Z|side|1
+      @|com/kawakawaplanning/japanecraft/JapaneCraftMod.java|1614|1622|isServer|method|net.minecraftforge.fml.relauncher.Side|isServer|()Z
+   Method End: netCheckHandler(Ljava/util/Map;Lnet/minecraftforge/fml/relauncher/Side;)Z
+Class End  : com.kawakawaplanning.japanecraft.JapaneCraftMod
+endProcessing com/kawakawaplanning/japanecraft/JapaneCraftMod.java
+
+processing com/kawakawaplanning/japanecraft/Kana.java
+@|com/kawakawaplanning/japanecraft/Kana.java|8|40|com.kawakawaplanning.japanecraft|package|com.kawakawaplanning.japanecraft|(file)
+Class Start: com.kawakawaplanning.japanecraft.Kana
+   @|com/kawakawaplanning/japanecraft/Kana.java|75|81|String|class|java.lang.String
+   @|com/kawakawaplanning/japanecraft/Kana.java|83|90|srcLine|field|com.kawakawaplanning.japanecraft.Kana|srcLine|
+   @|com/kawakawaplanning/japanecraft/Kana.java|104|110|String|class|java.lang.String
+   @|com/kawakawaplanning/japanecraft/Kana.java|112|119|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine|
+   Method Start: Kana()V
+      @|com/kawakawaplanning/japanecraft/Kana.java|331|335|Kana|method|com.kawakawaplanning.japanecraft.Kana|Kana|()V
+      @|com/kawakawaplanning/japanecraft/Kana.java|348|355|srcLine|field|com.kawakawaplanning.japanecraft.Kana|srcLine
+   Method End: Kana()V
+   Method Start: setLine(Ljava/lang/String;)V
+      @|com/kawakawaplanning/japanecraft/Kana.java|601|608|setLine|method|com.kawakawaplanning.japanecraft.Kana|setLine|(Ljava/lang/String;)V
+      @|com/kawakawaplanning/japanecraft/Kana.java|609|615|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/Kana.java|616|617|s|param|com.kawakawaplanning.japanecraft.Kana|setLine|(Ljava/lang/String;)V|s|0
+      @|com/kawakawaplanning/japanecraft/Kana.java|629|636|srcLine|field|com.kawakawaplanning.japanecraft.Kana|srcLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|639|640|s|param|com.kawakawaplanning.japanecraft.Kana|setLine|(Ljava/lang/String;)V|s|0
+   Method End: setLine(Ljava/lang/String;)V
+   Method Start: getLine()Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|898|905|getLine|method|com.kawakawaplanning.japanecraft.Kana|getLine|()Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|891|897|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/Kana.java|925|932|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+   Method End: getLine()Ljava/lang/String;
+   @|com/kawakawaplanning/japanecraft/Kana.java|953|959|String|class|java.lang.String
+   @|com/kawakawaplanning/japanecraft/Kana.java|964|972|r2kTable|field|com.kawakawaplanning.japanecraft.Kana|r2kTable|
+   Method Start: R2K(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|3679|3682|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|3672|3678|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/Kana.java|3683|3689|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/Kana.java|3690|3691|s|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|s|0
+      @|com/kawakawaplanning/japanecraft/Kana.java|3697|3698|n|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|n|1
+      @|com/kawakawaplanning/japanecraft/Kana.java|3716|3717|n|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|n|1
+      @|com/kawakawaplanning/japanecraft/Kana.java|3786|3787|s|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|s|0
+      @|com/kawakawaplanning/japanecraft/Kana.java|3788|3794|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|3795|3803|r2kTable|field|com.kawakawaplanning.japanecraft.Kana|r2kTable
+      @|com/kawakawaplanning/japanecraft/Kana.java|3842|3850|r2kTable|field|com.kawakawaplanning.japanecraft.Kana|r2kTable
+      @|com/kawakawaplanning/japanecraft/Kana.java|3854|3855|n|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|n|1
+      @|com/kawakawaplanning/japanecraft/Kana.java|3911|3912|s|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|s|0
+      @|com/kawakawaplanning/japanecraft/Kana.java|3913|3921|r2kTable|field|com.kawakawaplanning.japanecraft.Kana|r2kTable
+      @|com/kawakawaplanning/japanecraft/Kana.java|3925|3926|n|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|n|1
+      @|com/kawakawaplanning/japanecraft/Kana.java|3950|3951|n|param|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;|n|1
+   Method End: R2K(Ljava/lang/String;I)Ljava/lang/String;
+   Method Start: convert()V
+      @|com/kawakawaplanning/japanecraft/Kana.java|4254|4261|convert|method|com.kawakawaplanning.japanecraft.Kana|convert|()V
+      @|com/kawakawaplanning/japanecraft/Kana.java|4274|4280|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/Kana.java|4296|4302|String|class|java.lang.String
+      @|com/kawakawaplanning/japanecraft/Kana.java|4319|4326|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4380|4387|srcLine|field|com.kawakawaplanning.japanecraft.Kana|srcLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4388|4394|length|method|java.lang.CharSequence|length|()I
+      @|com/kawakawaplanning/japanecraft/Kana.java|4424|4431|srcLine|field|com.kawakawaplanning.japanecraft.Kana|srcLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4432|4441|substring|method|java.lang.String|substring|(II)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|4477|4483|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|4493|4500|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4501|4508|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4509|4512|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|4559|4565|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|4575|4582|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4583|4590|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4591|4594|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|4641|4647|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|4657|4664|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4665|4672|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4673|4676|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|4723|4729|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|4739|4746|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4747|4754|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4755|4758|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|4805|4811|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|4821|4828|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4829|4836|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|4837|4840|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|4905|4911|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|4952|4958|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|5012|5019|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|5020|5027|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|5028|5031|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|5105|5111|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|5202|5211|Character|class|java.lang.Character
+      @|com/kawakawaplanning/japanecraft/Kana.java|5212|5220|isLetter|method|java.lang.Character|isLetter|(C)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|5225|5231|charAt|method|java.lang.CharSequence|charAt|(I)C
+      @|com/kawakawaplanning/japanecraft/Kana.java|5269|5275|equals|method|java.lang.String|equals|(Ljava/lang/Object;)Z
+      @|com/kawakawaplanning/japanecraft/Kana.java|5309|5316|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|5317|5324|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|5325|5328|R2K|method|com.kawakawaplanning.japanecraft.Kana|R2K|(Ljava/lang/String;I)Ljava/lang/String;
+      @|com/kawakawaplanning/japanecraft/Kana.java|5517|5524|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|5525|5532|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|5693|5700|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+      @|com/kawakawaplanning/japanecraft/Kana.java|5701|5708|cnvLine|field|com.kawakawaplanning.japanecraft.Kana|cnvLine
+   Method End: convert()V
+Class End  : com.kawakawaplanning.japanecraft.Kana
+endProcessing com/kawakawaplanning/japanecraft/Kana.java
 
