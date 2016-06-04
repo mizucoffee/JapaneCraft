@@ -1,0 +1,16 @@
+[
+{
+  "modid": "japanecraft",
+  "name": "JapaneCraft",
+  "description": "JapaneCraft is Japanese input support Mod!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "www.kawakawaplanning.xyz",
+  "updateUrl": "",
+  "authorList": ["KawakawaRitsuki"],
+  "credits": "KawakawaPlanning",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
