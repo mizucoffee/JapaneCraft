@@ -28,8 +28,15 @@ class JapaneCraftMod {
     k.line = event.message
     k.convert()
 
-    val text = ChatComponentText("<${ event.username }> ${ event.message } (${ k.line })")
-    FMLCommonHandler.instance().minecraftServerInstance.configurationManager.sendChatMsg(text)
+    val chatComponentText = ChatComponentText(
+        "<${ event.username }> ${ event.message } (${ k.line })"
+    )
+
+    FMLCommonHandler
+        .instance()
+        .minecraftServerInstance
+        .configurationManager
+        .sendChatMsg(chatComponentText)
 
     event.isCanceled = true
   }
