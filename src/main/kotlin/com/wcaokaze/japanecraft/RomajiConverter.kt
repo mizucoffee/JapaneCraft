@@ -7,22 +7,33 @@ object RomajiConverter {
     fun StringBuffer.parseHeadRomaji(): String {
       val strBuffer = this
 
+      fun Trie<*>.hasChildren() = childCount != 0
+
+      fun confirm(strIdx: Int, trieNode: Trie<Output>): String {
+        val output = trieNode.value
+        val jpStr = output?.jpChar ?: strBuffer.substring(0 until strIdx)
+
+        strBuffer.delete(0, strIdx)
+        if (output != null) strBuffer.insert(0, output.nextInput)
+
+        return jpStr
+      }
+
       fun loop(strIdx: Int, trieNode: Trie<Output>): String {
-        val nextNode = if (strIdx in strBuffer.indices) {
-          trieNode[strBuffer[strIdx]]
-        } else {
-          null
+        if (!trieNode.hasChildren()) {
+          return confirm(strIdx, trieNode)
         }
 
-        if (nextNode == null) {
-          val output = trieNode.value
-
-          val jpStr = output?.jpChar ?: strBuffer.substring(0 until strIdx)
-
+        if (strIdx > strBuffer.lastIndex) {
+          val remainingChars = strBuffer.toString()
           strBuffer.delete(0, strIdx)
-          if (output != null) strBuffer.insert(0, output.nextInput)
+          return remainingChars
+        }
 
-          return jpStr
+        val nextNode = trieNode[strBuffer[strIdx]]
+
+        if (nextNode == null) {
+          return confirm(strIdx, trieNode)
         } else {
           return loop(strIdx + 1, nextNode)
         }
@@ -86,7 +97,7 @@ object RomajiConverter {
       "yy"   to Output("っ", nextInput = "y"),
       "rr"   to Output("っ", nextInput = "r"),
       "ww"   to Output("っ", nextInput = "w"),
-      "www"  to Output("ｗ", nextInput = "ww"),
+      "www"  to Output("w",  nextInput = "ww"),
       "cc"   to Output("っ", nextInput = "c"),
       "kya"  to Output("きゃ"),
       "kyi"  to Output("きぃ"),

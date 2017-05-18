@@ -3,12 +3,15 @@ package com.wcaokaze.japanecraft
 import java.util.*
 
 interface Trie<out V> {
+  val childCount: Int
   val value: V?
   operator fun get(char: Char): Trie<V>?
 }
 
 private class MutableTrie<V>(override var value: V?) : Trie<V> {
   private val children: MutableMap<Char, MutableTrie<V>> = TreeMap()
+
+  override val childCount get() = children.size
 
   override operator fun get(char: Char): MutableTrie<V>? = children[char]
 
