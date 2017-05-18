@@ -1,10 +1,6 @@
 package com.wcaokaze.japanecraft
 
 object RomajiConverter {
-  /**
-   * @throws IllegalRomajiException
-   *   when [romajiStr] contains illegal character(s) as Romaji.
-   */
   fun convert(romajiStr: String): String {
     val romajiBuffer = StringBuffer(romajiStr)
 
@@ -41,8 +37,6 @@ object RomajiConverter {
       }
     }
   }
-
-  class IllegalRomajiException : Exception()
 
   private class Output(val jpChar: String, val nextInput: String = "")
 
