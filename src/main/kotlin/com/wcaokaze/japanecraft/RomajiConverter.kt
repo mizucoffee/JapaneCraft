@@ -12,14 +12,18 @@ object RomajiConverter {
       val strBuffer = this
 
       fun loop(strIdx: Int, trieNode: Trie<Output>): String {
-        val nextNode = trieNode[strBuffer[strIdx]]
+        val nextNode = if (strIdx in strBuffer.indices) {
+          trieNode[strBuffer[strIdx]]
+        } else {
+          null
+        }
 
-        if (nextNode == null || strIdx == strBuffer.lastIndex) {
+        if (nextNode == null) {
           val output = trieNode.value
 
-          val jpStr = output?.jpChar ?: strBuffer.substring(0..strIdx)
+          val jpStr = output?.jpChar ?: strBuffer.substring(0 until strIdx)
 
-          strBuffer.removeRange(0..strIdx)
+          strBuffer.delete(0, strIdx)
           if (output != null) strBuffer.insert(0, output.nextInput)
 
           return jpStr
