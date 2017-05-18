@@ -1,9 +1,46 @@
 package com.wcaokaze.japanecraft
 
-import java.util.*
-
 class RomajiConverter {
-  private class Output(val jpChar: String, val nextInput: CharSequence = "")
+  /**
+   * @throws IllegalRomajiException
+   *   when [romajiStr] contains illegal character(s) as Romaji.
+   */
+  fun convert(romajiStr: String): String {
+    val romajiBuffer = StringBuffer(romajiStr)
+
+    fun StringBuffer.parseHeadRomaji(): String {
+      val strBuffer = this
+
+      fun loop(strIdx: Int, trieNode: Trie<Output>): String {
+        val nextNode = trieNode[strBuffer[strIdx]]
+
+        if (nextNode == null || strIdx == strBuffer.lastIndex) {
+          val output = trieNode.value
+
+          val jpStr = output?.jpChar ?: strBuffer.substring(0..strIdx)
+
+          strBuffer.removeRange(0..strIdx)
+          if (output != null) strBuffer.insert(0, output.nextInput)
+
+          return jpStr
+        } else {
+          return loop(strIdx + 1, nextNode)
+        }
+      }
+
+      return loop(0, romajiTable)
+    }
+
+    return buildString {
+      while (romajiBuffer.isNotEmpty()) {
+        append(romajiBuffer.parseHeadRomaji())
+      }
+    }
+  }
+
+  class IllegalRomajiException : Exception()
+
+  private class Output(val jpChar: String, val nextInput: String = "")
 
   private val romajiTable = trieOf(
       "-"    to Output("ー"),
