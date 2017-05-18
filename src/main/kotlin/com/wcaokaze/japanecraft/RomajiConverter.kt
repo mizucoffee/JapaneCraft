@@ -10,9 +10,10 @@ object RomajiConverter {
       fun loop(strIdx: Int, trieNode: Trie<Output>): String {
         fun confirm(): String {
           val output = trieNode.value
-          val jpStr = output?.jpChar ?: strBuffer.substring(0 until strIdx)
 
-          strBuffer.delete(0, strIdx)
+          val jpStr = output?.jpChar ?: strBuffer.substring(0..strIdx)
+
+          strBuffer.delete(0, strIdx + 1)
           if (output != null) strBuffer.insert(0, output.nextInput)
 
           return jpStr
@@ -20,14 +21,14 @@ object RomajiConverter {
 
         fun abort(): String {
           val remainingChars = strBuffer.toString()
-          strBuffer.delete(0, strIdx)
+          strBuffer.delete(0, strBuffer.length)
           return remainingChars
         }
 
-        if (trieNode.childCount == 0)     return confirm()
-        if (strIdx > strBuffer.lastIndex) return abort()
+        if (trieNode.childCount == 0)      return confirm()
+        if (strIdx == strBuffer.lastIndex) return abort()
 
-        val nextNode = trieNode[strBuffer[strIdx]]
+        val nextNode = trieNode[strBuffer[strIdx + 1]]
 
         if (nextNode != null) {
           return loop(strIdx + 1, nextNode)
@@ -36,7 +37,15 @@ object RomajiConverter {
         }
       }
 
-      return loop(0, romajiTable)
+      val trieNode = romajiTable[romajiBuffer.first()]
+
+      if (trieNode != null) {
+        return loop(0, trieNode)
+      } else {
+        val char = romajiBuffer.first()
+        romajiBuffer.deleteCharAt(0)
+        return String(charArrayOf(char))
+      }
     }
 
     return buildString {
