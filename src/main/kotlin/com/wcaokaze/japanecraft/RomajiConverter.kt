@@ -1,6 +1,6 @@
 package com.wcaokaze.japanecraft
 
-class RomajiConverter {
+object RomajiConverter {
   /**
    * @throws IllegalRomajiException
    *   when [romajiStr] contains illegal character(s) as Romaji.
