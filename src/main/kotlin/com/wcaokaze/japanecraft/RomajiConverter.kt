@@ -7,35 +7,32 @@ object RomajiConverter {
     fun StringBuffer.parseHeadRomaji(): String {
       val strBuffer = this
 
-      fun Trie<*>.hasChildren() = childCount != 0
-
-      fun confirm(strIdx: Int, trieNode: Trie<Output>): String {
-        val output = trieNode.value
-        val jpStr = output?.jpChar ?: strBuffer.substring(0 until strIdx)
-
-        strBuffer.delete(0, strIdx)
-        if (output != null) strBuffer.insert(0, output.nextInput)
-
-        return jpStr
-      }
-
       fun loop(strIdx: Int, trieNode: Trie<Output>): String {
-        if (!trieNode.hasChildren()) {
-          return confirm(strIdx, trieNode)
+        fun confirm(): String {
+          val output = trieNode.value
+          val jpStr = output?.jpChar ?: strBuffer.substring(0 until strIdx)
+
+          strBuffer.delete(0, strIdx)
+          if (output != null) strBuffer.insert(0, output.nextInput)
+
+          return jpStr
         }
 
-        if (strIdx > strBuffer.lastIndex) {
+        fun abort(): String {
           val remainingChars = strBuffer.toString()
           strBuffer.delete(0, strIdx)
           return remainingChars
         }
 
+        if (trieNode.childCount == 0)     return confirm()
+        if (strIdx > strBuffer.lastIndex) return abort()
+
         val nextNode = trieNode[strBuffer[strIdx]]
 
-        if (nextNode == null) {
-          return confirm(strIdx, trieNode)
-        } else {
+        if (nextNode != null) {
           return loop(strIdx + 1, nextNode)
+        } else {
+          return confirm()
         }
       }
 
