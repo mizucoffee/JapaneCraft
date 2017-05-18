@@ -42,4 +42,9 @@ class RomajiConverterTest {
     assertEquals("ch", RomajiConverter.convert("ch"))
     assertEquals("hこ", RomajiConverter.convert("hko"))
   }
+
+  @Test fun testSpecialChar() {
+    assertEquals("???「kzm〜〜〜〜〜……↓↓」",
+        RomajiConverter.convert("???[kzm~~~~~z.z.zjzj]"))
+  }
 }
