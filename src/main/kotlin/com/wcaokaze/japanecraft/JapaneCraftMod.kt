@@ -31,7 +31,20 @@ class JapaneCraftMod {
 
     val jpMsg = enMsg
         .split('`')
-        .mapIndexed { i, s -> if (i % 2 == 0) RomajiConverter.convert(s) else s }
+        .mapIndexed { i, s ->
+          if (i % 2 != 0) listOf(s)
+          else s
+              .split(' ')
+              .map {
+                when {
+                  // never satisfied because of the specification of minecraft.
+                  it.isEmpty() -> " " + it
+                  it.first().isUpperCase() -> " " + it
+                  else -> " " + RomajiConverter.convert(it)
+                }
+              }
+        }
+        .flatten()
         .fold(StringBuffer()) { b, s -> b.append(s) }
         .toString()
 
