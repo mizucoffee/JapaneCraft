@@ -28,7 +28,12 @@ class JapaneCraftMod {
         .sendChatMsg(ChatComponentText(msg))
 
     val enMsg = event.message
-    val jpMsg = convertToJp(enMsg)
+
+    val jpMsg = enMsg
+        .split('`')
+        .mapIndexed { i, s -> if (i % 2 == 0) RomajiConverter.convert(s) else s }
+        .fold(StringBuffer()) { b, s -> b.append(s) }
+        .toString()
 
     val timeStr = timeFormatter.format(Date())
 
@@ -39,13 +44,5 @@ class JapaneCraftMod {
     }
 
     event.isCanceled = true
-  }
-
-  private fun convertToJp(message: String): String {
-    return message
-        .split('`')
-        .mapIndexed { i, s -> if (i % 2 == 0) RomajiConverter.convert(s) else s }
-        .fold(StringBuffer()) { b, s -> b.append(s) }
-        .toString()
   }
 }
