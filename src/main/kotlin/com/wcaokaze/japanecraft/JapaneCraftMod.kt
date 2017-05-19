@@ -7,9 +7,13 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Mod(modid = "japanecraft", version = "0.3.0")
 class JapaneCraftMod {
+  private val timeFormatter = SimpleDateFormat("HH:mm:ss")
+
   @Mod.EventHandler
   fun init(event: FMLInitializationEvent) {
     MinecraftForge.EVENT_BUS.register(this)
@@ -26,7 +30,9 @@ class JapaneCraftMod {
     val enMsg = event.message
     val jpMsg = RomajiConverter.convert(enMsg)
 
-    sendChatMsg("<${ event.username }> $enMsg")
+    val timeStr = timeFormatter.format(Date())
+
+    sendChatMsg("<${ event.username }> [$timeStr] $enMsg")
 
     if (enMsg.all { it < 0x80.toChar() } && enMsg != jpMsg) {
       sendChatMsg("  §b$jpMsg")
