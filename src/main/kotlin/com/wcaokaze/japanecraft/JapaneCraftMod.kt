@@ -32,8 +32,9 @@ class JapaneCraftMod {
     val jpMsg = enMsg
         .split('`')
         .mapIndexed { i, s ->
-          if (i % 2 != 0) listOf(s)
-          else s
+          if (i % 2 != 0) return@mapIndexed listOf(s)
+
+          return@mapIndexed s
               .split(' ')
               .map {
                 when {
