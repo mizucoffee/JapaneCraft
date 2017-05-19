@@ -27,7 +27,10 @@ class JapaneCraftMod {
     val jpMsg = RomajiConverter.convert(enMsg)
 
     sendChatMsg("<${ event.username }> $enMsg")
-    sendChatMsg("  §b$jpMsg")
+
+    if (enMsg.all { it < 0x80.toChar() } && enMsg != jpMsg) {
+      sendChatMsg("  §b$jpMsg")
+    }
 
     event.isCanceled = true
   }
