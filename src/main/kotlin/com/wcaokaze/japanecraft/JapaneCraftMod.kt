@@ -4,6 +4,8 @@ import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import cpw.mods.fml.common.network.NetworkCheckHandler
+import cpw.mods.fml.relauncher.Side
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
@@ -12,6 +14,8 @@ import java.util.*
 
 @Mod(modid = "japanecraft", version = "0.3.0")
 class JapaneCraftMod {
+  var isServer = true
+
   private val timeFormatter = SimpleDateFormat("HH:mm:ss")
 
   @Mod.EventHandler
@@ -58,5 +62,11 @@ class JapaneCraftMod {
     }
 
     event.isCanceled = true
+  }
+
+  @NetworkCheckHandler
+  fun netCheckHandler(mods: Map<String, String>, side: Side): Boolean {
+    isServer = side.isServer
+    return true
   }
 }
