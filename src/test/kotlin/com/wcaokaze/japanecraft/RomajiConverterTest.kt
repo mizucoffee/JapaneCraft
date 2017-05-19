@@ -19,7 +19,7 @@ class RomajiConverterTest {
   }
 
   @Test fun testString() {
-    assertEquals("こんにちは",       RomajiConverter.convert("kon'nichiha"))
+    assertEquals("こんにちは",         RomajiConverter.convert("kon'nichiha"))
     assertEquals("おはようございます", RomajiConverter.convert("ohayougozaimasu"))
   }
 
@@ -38,8 +38,8 @@ class RomajiConverterTest {
   }
 
   @Test fun testInvalidRomaji() {
-    assertEquals("c", RomajiConverter.convert("c"))
-    assertEquals("ch", RomajiConverter.convert("ch"))
+    assertEquals("c",   RomajiConverter.convert("c"))
+    assertEquals("ch",  RomajiConverter.convert("ch"))
     assertEquals("hこ", RomajiConverter.convert("hko"))
   }
 
