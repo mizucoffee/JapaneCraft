@@ -12,7 +12,7 @@ import net.minecraftforge.event.ServerChatEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "0.3.0")
+@Mod(modid = "japanecraft", version = "0.3.1")
 class JapaneCraftMod {
   var isServer = true
 
