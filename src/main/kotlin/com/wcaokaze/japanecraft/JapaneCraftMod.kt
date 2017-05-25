@@ -30,8 +30,26 @@ class JapaneCraftMod {
         .sendChatMsg(ChatComponentText(msg))
 
     val enMsg = event.message
+    val jpMsg = enMsg.toJapanese()
 
-    val jpMsg = enMsg
+    val timeStr = timeFormatter.format(Date())
+
+    sendChatMsg("<${ event.username }> [$timeStr] $enMsg")
+
+    if (enMsg.all { it < 0x80.toChar() } && enMsg != jpMsg) {
+      sendChatMsg("  §b$jpMsg")
+    }
+
+    event.isCanceled = true
+  }
+
+  @NetworkCheckHandler
+  fun netCheckHandler(mods: Map<String, String>, side: Side): Boolean {
+    return side.isServer
+  }
+
+  private fun String.toJapanese(): String {
+    return this
         .split('`')
         .mapIndexed { i, s ->
           if (i % 2 != 0) return@mapIndexed listOf(s)
@@ -50,20 +68,5 @@ class JapaneCraftMod {
         .flatten()
         .fold(StringBuffer()) { b, s -> b.append(s) }
         .toString()
-
-    val timeStr = timeFormatter.format(Date())
-
-    sendChatMsg("<${ event.username }> [$timeStr] $enMsg")
-
-    if (enMsg.all { it < 0x80.toChar() } && enMsg != jpMsg) {
-      sendChatMsg("  §b$jpMsg")
-    }
-
-    event.isCanceled = true
-  }
-
-  @NetworkCheckHandler
-  fun netCheckHandler(mods: Map<String, String>, side: Side): Boolean {
-    return side.isServer
   }
 }
