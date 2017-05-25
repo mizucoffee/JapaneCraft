@@ -12,7 +12,7 @@ import net.minecraftforge.event.ServerChatEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "0.3.1")
+@Mod(modid = "japanecraft", version = "0.3.2")
 class JapaneCraftMod {
   private val timeFormatter = SimpleDateFormat("HH:mm:ss")
 
