@@ -27,12 +27,6 @@ class JapaneCraftMod {
 
   @SubscribeEvent
   fun onServerChat(event: ServerChatEvent) {
-    fun sendChatMsg(msg: String) = FMLCommonHandler
-        .instance()
-        .minecraftServerInstance
-        .configurationManager
-        .sendChatMsg(ChatComponentText(msg))
-
     val variableMap: MutableMap<String, String> = HashMap()
 
     val (rawMessage, convertedMessage) = event.convertMessage()
@@ -43,7 +37,11 @@ class JapaneCraftMod {
     variableMap["convertedMessage"] = convertedMessage
 
     variableExpander.expand(variableMap).split('\n').forEach {
-      sendChatMsg(it)
+      FMLCommonHandler
+          .instance()
+          .minecraftServerInstance
+          .configurationManager
+          .sendChatMsg(ChatComponentText(it))
     }
 
     event.isCanceled = true
