@@ -11,7 +11,6 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
 @Mod(modid = "japanecraft", version = "0.3.2")
 class JapaneCraftMod {
@@ -27,14 +26,14 @@ class JapaneCraftMod {
 
   @SubscribeEvent
   fun onServerChat(event: ServerChatEvent) {
-    val variableMap: MutableMap<String, String> = HashMap()
-
     val (rawMessage, convertedMessage) = event.convertMessage()
 
-    variableMap["username"]         = event.username
-    variableMap["time"]             = timeFormatter.format(Date())
-    variableMap["rawMessage"]       = rawMessage
-    variableMap["convertedMessage"] = convertedMessage
+    val variableMap = mapOf(
+        "username"         to event.username,
+        "time"             to timeFormatter.format(Date()),
+        "rawMessage"       to rawMessage,
+        "convertedMessage" to convertedMessage
+    )
 
     variableExpander.expand(variableMap).split('\n').forEach {
       FMLCommonHandler
