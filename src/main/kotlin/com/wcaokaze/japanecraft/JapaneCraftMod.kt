@@ -58,12 +58,11 @@ class JapaneCraftMod {
     val enMsg = message
     val jpMsg = enMsg.toJapanese()
 
-    if (enMsg.any { it >= 0x80.toChar() } ||
-        enMsg.filter { it != '`' } == jpMsg)
-    {
-      return "" to enMsg
-    } else {
-      return enMsg to jpMsg
+    return when {
+      //                                     raw   to converted
+      enMsg.any { it >= 0x80.toChar() }   -> ""    to enMsg
+      enMsg.filter { it != '`' } == jpMsg -> ""    to enMsg
+      else                                -> enMsg to jpMsg
     }
   }
 
