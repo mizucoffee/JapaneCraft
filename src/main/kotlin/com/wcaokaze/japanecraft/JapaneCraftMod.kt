@@ -14,8 +14,6 @@ import java.util.*
 
 @Mod(modid = "japanecraft", version = "0.3.1")
 class JapaneCraftMod {
-  var isServer = true
-
   private val timeFormatter = SimpleDateFormat("HH:mm:ss")
 
   @Mod.EventHandler
@@ -66,7 +64,6 @@ class JapaneCraftMod {
 
   @NetworkCheckHandler
   fun netCheckHandler(mods: Map<String, String>, side: Side): Boolean {
-    isServer = side.isServer
-    return true
+    return side.isServer
   }
 }
