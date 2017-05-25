@@ -11,10 +11,14 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 @Mod(modid = "japanecraft", version = "0.3.2")
 class JapaneCraftMod {
   private val timeFormatter = SimpleDateFormat("HH:mm:ss")
+
+  private val variableExpander
+      = VariableExpander("<\$username> \$rawMessage\$n  §b\$convertedMessage")
 
   @Mod.EventHandler
   fun init(event: FMLInitializationEvent) {
@@ -29,20 +33,28 @@ class JapaneCraftMod {
         .configurationManager
         .sendChatMsg(ChatComponentText(msg))
 
-    var rawMessage = event.message
-    var convertedMessage = rawMessage.toJapanese()
+    val variableMap: MutableMap<String, String> = HashMap()
+
+    variableMap["username"] = event.username
+
+    val rawMessage = event.message
+    val convertedMessage = rawMessage.toJapanese()
 
     if (rawMessage.any { it >= 0x80.toChar() } ||
         rawMessage.filter { it != '`' } == convertedMessage)
     {
-      convertedMessage = rawMessage
-      rawMessage = ""
+      variableMap["rawMessage"] = ""
+      variableMap["convertedMessage"] = rawMessage
+    } else {
+      variableMap["rawMessage"] = rawMessage
+      variableMap["convertedMessage"] = convertedMessage
     }
 
-    val timeStr = timeFormatter.format(Date())
+    variableMap["time"] = timeFormatter.format(Date())
 
-    sendChatMsg("<${ event.username }> [$timeStr] $rawMessage")
-    sendChatMsg("  §b$convertedMessage")
+    variableExpander.expand(variableMap).split('\n').forEach {
+      sendChatMsg(it)
+    }
 
     event.isCanceled = true
   }
