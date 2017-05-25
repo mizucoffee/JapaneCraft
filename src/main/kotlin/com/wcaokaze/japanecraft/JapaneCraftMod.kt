@@ -29,23 +29,27 @@ class JapaneCraftMod {
         .configurationManager
         .sendChatMsg(ChatComponentText(msg))
 
-    val rawMessage = event.message
-    val convertedMessage = rawMessage.toJapanese()
+    var rawMessage = event.message
+    var convertedMessage = rawMessage.toJapanese()
+
+    if (rawMessage.any { it >= 0x80.toChar() } ||
+        rawMessage == convertedMessage)
+    {
+      convertedMessage = rawMessage
+      rawMessage = ""
+    }
 
     val timeStr = timeFormatter.format(Date())
 
     sendChatMsg("<${ event.username }> [$timeStr] $rawMessage")
-
-    if (rawMessage.all { it < 0x80.toChar() } && rawMessage != convertedMessage) {
-      sendChatMsg("  §b$convertedMessage")
-    }
+    sendChatMsg("  §b$convertedMessage")
 
     event.isCanceled = true
   }
 
   @NetworkCheckHandler
   fun netCheckHandler(mods: Map<String, String>, side: Side): Boolean {
-    return side.isServer
+    return true
   }
 
   private fun String.toJapanese(): String {
@@ -68,5 +72,6 @@ class JapaneCraftMod {
         .flatten()
         .fold(StringBuffer()) { b, s -> b.append(s) }
         .toString()
+        .drop(1)
   }
 }
