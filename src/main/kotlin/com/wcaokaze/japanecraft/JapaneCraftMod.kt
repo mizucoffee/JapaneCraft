@@ -35,22 +35,12 @@ class JapaneCraftMod {
 
     val variableMap: MutableMap<String, String> = HashMap()
 
-    variableMap["username"] = event.username
+    val (rawMessage, convertedMessage) = event.convertMessage()
 
-    val rawMessage = event.message
-    val convertedMessage = rawMessage.toJapanese()
-
-    if (rawMessage.any { it >= 0x80.toChar() } ||
-        rawMessage.filter { it != '`' } == convertedMessage)
-    {
-      variableMap["rawMessage"] = ""
-      variableMap["convertedMessage"] = rawMessage
-    } else {
-      variableMap["rawMessage"] = rawMessage
-      variableMap["convertedMessage"] = convertedMessage
-    }
-
-    variableMap["time"] = timeFormatter.format(Date())
+    variableMap["username"]         = event.username
+    variableMap["time"]             = timeFormatter.format(Date())
+    variableMap["rawMessage"]       = rawMessage
+    variableMap["convertedMessage"] = convertedMessage
 
     variableExpander.expand(variableMap).split('\n').forEach {
       sendChatMsg(it)
@@ -62,6 +52,19 @@ class JapaneCraftMod {
   @NetworkCheckHandler
   fun netCheckHandler(mods: Map<String, String>, side: Side): Boolean {
     return true
+  }
+
+  private fun ServerChatEvent.convertMessage(): Pair<String, String> {
+    val enMsg = message
+    val jpMsg = enMsg.toJapanese()
+
+    if (enMsg.any { it >= 0x80.toChar() } ||
+        enMsg.filter { it != '`' } == jpMsg)
+    {
+      return "" to enMsg
+    } else {
+      return enMsg to jpMsg
+    }
   }
 
   private fun String.toJapanese(): String {
