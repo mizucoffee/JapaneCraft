@@ -53,25 +53,34 @@ class JapaneCraftMod {
   }
 
   private fun String.toJapanese(): String {
-    return this
-        .split('`')
-        .mapIndexed { i, s ->
-          if (i % 2 != 0) return@mapIndexed listOf(s)
+    val romajiStr = this
 
-          return@mapIndexed s
-              .split(' ')
-              .map {
-                when {
-                  // never satisfied because of the specification of minecraft.
-                  it.isEmpty() -> " " + it
-                  it.first().isUpperCase() -> " " + it
-                  else -> " " + RomajiConverter.convert(it)
-                }
+    return buildString {
+      for ((index, str) in romajiStr.split('`').withIndex()) {
+        if (index % 2 != 0) {
+          append(str)
+        } else {
+          for (word in str.split(' ')) {
+            when {
+              word.isEmpty() -> {
+                append(' ')
               }
+
+              word.first().isUpperCase() -> {
+                append(' ')
+                append(word)
+              }
+
+              else -> {
+                append(' ')
+                append(RomajiConverter.convert(word))
+              }
+            }
+          }
+
+          deleteCharAt(0)
         }
-        .flatten()
-        .fold(StringBuffer()) { b, s -> b.append(s) }
-        .toString()
-        .drop(1)
+      }
+    }
   }
 }
