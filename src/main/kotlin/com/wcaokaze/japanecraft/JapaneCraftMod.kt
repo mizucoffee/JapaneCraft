@@ -33,7 +33,7 @@ class JapaneCraftMod {
     var convertedMessage = rawMessage.toJapanese()
 
     if (rawMessage.any { it >= 0x80.toChar() } ||
-        rawMessage == convertedMessage)
+        rawMessage.filter { it != '`' } == convertedMessage)
     {
       convertedMessage = rawMessage
       rawMessage = ""
