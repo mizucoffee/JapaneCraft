@@ -14,8 +14,6 @@ import java.util.*
 
 @Mod(modid = "japanecraft", version = "0.3.1")
 class JapaneCraftMod {
-  var isServer = true
-
   private val timeFormatter = SimpleDateFormat("HH:mm:ss")
 
   @Mod.EventHandler
@@ -31,42 +29,58 @@ class JapaneCraftMod {
         .configurationManager
         .sendChatMsg(ChatComponentText(msg))
 
-    val enMsg = event.message
+    var rawMessage = event.message
+    var convertedMessage = rawMessage.toJapanese()
 
-    val jpMsg = enMsg
-        .split('`')
-        .mapIndexed { i, s ->
-          if (i % 2 != 0) return@mapIndexed listOf(s)
-
-          return@mapIndexed s
-              .split(' ')
-              .map {
-                when {
-                  // never satisfied because of the specification of minecraft.
-                  it.isEmpty() -> " " + it
-                  it.first().isUpperCase() -> " " + it
-                  else -> " " + RomajiConverter.convert(it)
-                }
-              }
-        }
-        .flatten()
-        .fold(StringBuffer()) { b, s -> b.append(s) }
-        .toString()
+    if (rawMessage.any { it >= 0x80.toChar() } ||
+        rawMessage.filter { it != '`' } == convertedMessage)
+    {
+      convertedMessage = rawMessage
+      rawMessage = ""
+    }
 
     val timeStr = timeFormatter.format(Date())
 
-    sendChatMsg("<${ event.username }> [$timeStr] $enMsg")
-
-    if (enMsg.all { it < 0x80.toChar() } && enMsg != jpMsg) {
-      sendChatMsg("  §b$jpMsg")
-    }
+    sendChatMsg("<${ event.username }> [$timeStr] $rawMessage")
+    sendChatMsg("  §b$convertedMessage")
 
     event.isCanceled = true
   }
 
   @NetworkCheckHandler
   fun netCheckHandler(mods: Map<String, String>, side: Side): Boolean {
-    isServer = side.isServer
     return true
+  }
+
+  private fun String.toJapanese(): String {
+    val romajiStr = this
+
+    return buildString {
+      for ((index, str) in romajiStr.split('`').withIndex()) {
+        if (index % 2 != 0) {
+          append(str)
+        } else {
+          for (word in str.split(' ')) {
+            when {
+              word.isEmpty() -> {
+                append(' ')
+              }
+
+              word.first().isUpperCase() -> {
+                append(word)
+                append(' ')
+              }
+
+              else -> {
+                append(RomajiConverter.convert(word))
+                append(' ')
+              }
+            }
+          }
+
+          deleteCharAt(lastIndex)
+        }
+      }
+    }
   }
 }
