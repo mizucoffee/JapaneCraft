@@ -67,18 +67,18 @@ class JapaneCraftMod {
               }
 
               word.first().isUpperCase() -> {
-                append(' ')
                 append(word)
+                append(' ')
               }
 
               else -> {
-                append(' ')
                 append(RomajiConverter.convert(word))
+                append(' ')
               }
             }
           }
 
-          deleteCharAt(0)
+          deleteCharAt(lastIndex)
         }
       }
     }
