@@ -29,15 +29,15 @@ class JapaneCraftMod {
         .configurationManager
         .sendChatMsg(ChatComponentText(msg))
 
-    val enMsg = event.message
-    val jpMsg = enMsg.toJapanese()
+    val rawMessage = event.message
+    val convertedMessage = rawMessage.toJapanese()
 
     val timeStr = timeFormatter.format(Date())
 
-    sendChatMsg("<${ event.username }> [$timeStr] $enMsg")
+    sendChatMsg("<${ event.username }> [$timeStr] $rawMessage")
 
-    if (enMsg.all { it < 0x80.toChar() } && enMsg != jpMsg) {
-      sendChatMsg("  §b$jpMsg")
+    if (rawMessage.all { it < 0x80.toChar() } && rawMessage != convertedMessage) {
+      sendChatMsg("  §b$convertedMessage")
     }
 
     event.isCanceled = true
