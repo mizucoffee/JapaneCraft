@@ -1,7 +1,7 @@
 package com.wcaokaze.japanecraft
 
 class RomajiConverter(romajiMap: Map<String, Output>) {
-  private val romajiTable = trieOf(*romajiMap.map { it.toPair() }.toTypedArray())
+  private val romajiTable = romajiMap.toTrie()
 
   fun convert(romajiStr: String): String {
     val romajiBuffer = StringBuffer(romajiStr)
