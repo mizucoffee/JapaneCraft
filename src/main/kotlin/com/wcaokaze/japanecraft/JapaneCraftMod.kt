@@ -29,6 +29,8 @@ class JapaneCraftMod {
     val (rawMessage, convertedMessage) = event.convertMessage()
 
     val variableMap = mapOf(
+        "n"                to "\n",
+        "$"                to "\$",
         "username"         to event.username,
         "time"             to timeFormatter.format(Date()),
         "rawMessage"       to rawMessage,
