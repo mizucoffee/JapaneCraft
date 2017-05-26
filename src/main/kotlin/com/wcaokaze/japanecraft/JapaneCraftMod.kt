@@ -12,13 +12,13 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.event.ServerChatEvent
 import java.io.File
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Mod(modid = "japanecraft", version = "0.3.2")
 class JapaneCraftMod {
-  private val timeFormatter = SimpleDateFormat("HH:mm:ss")
-
+  private lateinit var timeFormatter: DateFormat
   private lateinit var variableExpander: VariableExpander
 
   @Mod.EventHandler
@@ -32,6 +32,11 @@ class JapaneCraftMod {
         "The format for chat messages")
 
     variableExpander = VariableExpander(chatMsgFormat)
+
+    val timeFormat = config.getString("time", "format",
+        "HH:mm:ss", "The format for `\$time` in chat format")
+
+    timeFormatter = SimpleDateFormat(timeFormat)
 
     config.save()
   }
