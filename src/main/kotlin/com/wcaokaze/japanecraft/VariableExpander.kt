@@ -63,7 +63,7 @@ class VariableExpander(strWithVars: String) {
 
     class VariableExpander(private val variableName: String) : TokenExpander() {
       override fun expand(variableMap: Map<String, String>): String {
-        return variableMap.getOrDefault(variableName, variableName)
+        return variableMap.getOrDefault(variableName, "\${variableName}")
       }
     }
   }
