@@ -1,5 +1,6 @@
 package com.wcaokaze.util
 
+import java.io.InputStream
 import kotlin.Boolean          as KBoolean
 import kotlin.Number           as KNumber
 import kotlin.String           as KString
@@ -14,3 +15,5 @@ sealed class JsonDatum<out T>(val value: T) {
   class  Map    (value: KMap<KString, JsonDatum<*>>) : JsonDatum<KMap<KString, JsonDatum<*>>>(value)
   object Null                                        : JsonDatum<Nothing?>                   (null)
 }
+
+fun parseJson(inputStream: InputStream): JsonDatum<*> = throw NotImplementedError()
