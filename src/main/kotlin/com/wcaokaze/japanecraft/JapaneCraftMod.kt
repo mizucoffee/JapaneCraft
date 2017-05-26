@@ -3,12 +3,15 @@ package com.wcaokaze.japanecraft
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
+import cpw.mods.fml.common.event.FMLPreInitializationEvent
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import cpw.mods.fml.common.network.NetworkCheckHandler
 import cpw.mods.fml.relauncher.Side
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.event.ServerChatEvent
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,8 +19,22 @@ import java.util.*
 class JapaneCraftMod {
   private val timeFormatter = SimpleDateFormat("HH:mm:ss")
 
-  private val variableExpander
-      = VariableExpander("<\$username> \$rawMessage\$n  §b\$convertedMessage")
+  private lateinit var variableExpander: VariableExpander
+
+  @Mod.EventHandler
+  fun preInit(event: FMLPreInitializationEvent) {
+    val config = Configuration(File("config/JapaneCraft.cfg"))
+
+    config.load()
+
+    val chatMsgFormat = config.getString("chat", "format",
+        "<\$username> \$rawMessage\$n  §b\$convertedMessage",
+        "The format for chat messages")
+
+    variableExpander = VariableExpander(chatMsgFormat)
+
+    config.save()
+  }
 
   @Mod.EventHandler
   fun init(event: FMLInitializationEvent) {
