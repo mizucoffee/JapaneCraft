@@ -25,7 +25,7 @@ class VariableExpander(strWithVars: String) {
             if (closeBraceIdx == -1) continue@searchDollar
 
             val constantStr  = buffer.substring(0, i)
-            val variableName = buffer.substring(i + 2, closeBraceIdx + 1)
+            val variableName = buffer.substring(i + 2, closeBraceIdx)
 
             yield(TokenExpander.ConstantString(constantStr))
             yield(TokenExpander.VariableExpander(variableName))

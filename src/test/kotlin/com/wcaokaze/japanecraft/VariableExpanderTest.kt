@@ -24,5 +24,5 @@ class VariableExpanderTest {
   @Test fun testIdentifierBound() = test("[\$apple]", "[りんご]")
 
   @Test fun testComplex()
-      = test("apple, \${banana}, \$cherry", "りんご, バナナ, さくらんぼ")
+      = test("apple, \${banana}, \$cherry", "apple, バナナ, さくらんぼ")
 }
