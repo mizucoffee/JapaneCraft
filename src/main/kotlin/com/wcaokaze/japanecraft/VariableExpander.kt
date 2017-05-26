@@ -13,6 +13,12 @@ class VariableExpander(strWithVars: String) {
   }
 
   private fun parse(str: String): List<TokenExpander> {
+    val identifierStartCharList = ('a'..'z') + ('A'..'Z') + '_'
+    val identifierPartCharList = identifierStartCharList + ('0'..'9')
+
+    fun Char.isIdentifierStart() = this in identifierStartCharList
+    fun Char.isIdentifierPart()  = this in identifierPartCharList
+
     return buildSequence {
       val buffer = StringBuffer(str)
 
@@ -34,12 +40,12 @@ class VariableExpander(strWithVars: String) {
 
             buffer.delete(0, closeBraceIdx + 1)
             continue@yieldToken
-          } else if (buffer[i + 1].isJavaIdentifierStart()) {
+          } else if (buffer[i + 1].isIdentifierStart()) {
             yield(TokenExpander.ConstantString(buffer.substring(0, i)))
             buffer.delete(0, i + 1)
 
             val variableName
-                = buffer.takeWhile { it.isJavaIdentifierPart() } .toString()
+                = buffer.takeWhile { it.isIdentifierPart() } .toString()
 
             yield(TokenExpander.VariableExpander(variableName))
 
