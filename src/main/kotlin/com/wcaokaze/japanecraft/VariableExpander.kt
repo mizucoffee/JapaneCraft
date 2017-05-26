@@ -26,6 +26,8 @@ class VariableExpander(strWithVars: String) {
 
             val constantStr  = buffer.substring(0, i)
             val variableName = buffer.substring(i + 2, closeBraceIdx)
+                                     .dropWhile     { it == ' ' }
+                                     .dropLastWhile { it == ' ' }
 
             yield(TokenExpander.ConstantString(constantStr))
             yield(TokenExpander.VariableExpander(variableName))
