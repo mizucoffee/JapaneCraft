@@ -1,11 +1,9 @@
 package com.wcaokaze.japanecraft
 
-class VariableExpander {
-  private val tokenExpanderList: List<TokenExpander>
+import kotlin.coroutines.experimental.buildSequence
 
-  constructor(strWithVars: String) {
-
-  }
+class VariableExpander(strWithVars: String) {
+  private val tokenExpanderList = parse(strWithVars)
 
   fun expand(variableMap: Map<String, String>): String {
     return tokenExpanderList
@@ -14,18 +12,56 @@ class VariableExpander {
         .toString()
   }
 
+  private fun parse(str: String): List<TokenExpander> {
+    return buildSequence {
+      val buffer = StringBuffer(str)
+
+      yieldToken@ while (buffer.isNotEmpty()) {
+        searchDollar@ for (i in 0 until buffer.lastIndex) {
+          if (buffer[i] != '$') continue@searchDollar
+
+          if (buffer[i + 1] == '{') {
+            val closeBraceIdx = buffer.indexOf("}")
+            if (closeBraceIdx == -1) continue@searchDollar
+
+            val constantStr  = buffer.substring(0, i)
+            val variableName = buffer.substring(i + 2, closeBraceIdx + 1)
+
+            yield(TokenExpander.ConstantString(constantStr))
+            yield(TokenExpander.VariableExpander(variableName))
+
+            buffer.delete(0, closeBraceIdx + 1)
+            continue@yieldToken
+          } else if (buffer[i + 1].isJavaIdentifierStart()) {
+            yield(TokenExpander.ConstantString(buffer.substring(0, i)))
+            buffer.delete(0, i + 1)
+
+            val variableName
+                = buffer.takeWhile { it.isJavaIdentifierPart() } .toString()
+
+            yield(TokenExpander.VariableExpander(variableName))
+
+            buffer.delete(0, variableName.length)
+            continue@yieldToken
+          }
+        }
+
+        yield(TokenExpander.ConstantString(buffer.toString()))
+        buffer.delete(0, buffer.length)
+      }
+    } .toList()
+  }
+
   private sealed class TokenExpander {
     abstract fun expand(variableMap: Map<String, String>): String
 
-    private class ConstantString(private val str: String) : TokenExpander() {
+    class ConstantString(private val str: String) : TokenExpander() {
       override fun expand(variableMap: Map<String, String>): String {
         return str
       }
     }
 
-    private class VariableExpander
-        (private val variableName: String) : TokenExpander()
-    {
+    class VariableExpander(private val variableName: String) : TokenExpander() {
       override fun expand(variableMap: Map<String, String>): String {
         return variableMap.getOrDefault(variableName, variableName)
       }
