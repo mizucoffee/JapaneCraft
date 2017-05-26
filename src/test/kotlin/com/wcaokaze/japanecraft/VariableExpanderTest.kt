@@ -17,13 +17,14 @@ class VariableExpanderTest {
     assertEquals(expandedStr, VariableExpander(str).expand(variableMap))
   }
 
-  @Test fun testSimple()          = test("\$apple",     "りんご")
-  @Test fun testBrace()           = test("\${apple}",   "りんご")
-  @Test fun testConst()           = test("abc",         "abc")
-  @Test fun testUnclosedBrace()   = test("\${apple",    "\${apple")
-  @Test fun testIdentifierBound() = test("[\$apple]",   "[りんご]")
-  @Test fun testNotFound()        = test("\$orange",    "\${orange}")
-  @Test fun testBraceWithSpace()  = test("\${ apple }", "りんご")
+  @Test fun testSimple()          = test("\$apple",         "りんご")
+  @Test fun testBrace()           = test("\${apple}",       "りんご")
+  @Test fun testConst()           = test("abc",             "abc")
+  @Test fun testUnclosedBrace()   = test("\${apple",        "\${apple")
+  @Test fun testIdentifierBound() = test("[\$apple]",       "[りんご]")
+  @Test fun testNotFound()        = test("\$orange",        "\${orange}")
+  @Test fun testBraceWithSpace()  = test("\${ apple }",     "りんご")
+  @Test fun testConsecutively()   = test("\$apple\$banana", "りんごバナナ")
 
   @Test fun testComplex()
       = test("apple, \${banana}, \$cherry", "apple, バナナ, さくらんぼ")
