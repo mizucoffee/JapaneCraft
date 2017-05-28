@@ -1,6 +1,7 @@
 package com.wcaokaze.japanecraft
 
 import com.wcaokaze.japanecraft.RomajiConverter.Output
+import com.wcaokaze.util.parseJson
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
@@ -339,22 +340,18 @@ class JapaneCraftMod {
 
   @Mod.EventHandler
   fun preInit(event: FMLPreInitializationEvent) {
-    val config = Configuration(File("config/JapaneCraft.cfg"))
+    loadConfig(File("config/JapaneCraft.cfg")) {
+      val chatMsgFormat = it.getString("chat", "format",
+          "<\$username> \$rawMessage\$n  §b\$convertedMessage",
+          "The format for chat messages")
 
-    config.load()
+      variableExpander = VariableExpander(chatMsgFormat)
 
-    val chatMsgFormat = config.getString("chat", "format",
-        "<\$username> \$rawMessage\$n  §b\$convertedMessage",
-        "The format for chat messages")
+      val timeFormat = it.getString("time", "format",
+          "HH:mm:ss", "The format for `\$time` in chat format")
 
-    variableExpander = VariableExpander(chatMsgFormat)
-
-    val timeFormat = config.getString("time", "format",
-        "HH:mm:ss", "The format for `\$time` in chat format")
-
-    timeFormatter = SimpleDateFormat(timeFormat)
-
-    config.save()
+      timeFormatter = SimpleDateFormat(timeFormat)
+    }
   }
 
   @Mod.EventHandler
@@ -433,5 +430,12 @@ class JapaneCraftMod {
         }
       }
     }
+  }
+
+  private fun loadConfig(file: File, loadOperation: (Configuration) -> Unit) {
+    val config = Configuration(file)
+    config.load()
+    loadOperation(config)
+    config.save()
   }
 }
