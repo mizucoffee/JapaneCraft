@@ -30,15 +30,21 @@ class JapaneCraftMod {
       try {
         if (!exists()) createDefaultRomajiTableJson()
 
-        reader().buffered()
-            .use { parseJson(it, list(map(string))) }
-            .map {
-              val input     = it["input"]      ?: throw JsonParseException()
-              val output    = it["output"]     ?: throw JsonParseException()
-              val nextInput = it["next_input"] ?: ""
+        class RomajiTableEntry(val input: String,
+                               val output: String,
+                               val nextInput: String)
 
-              input to RomajiConverter.Output(output, nextInput)
+        reader().buffered()
+            .use {
+              parseJson(it, list(
+                  instanceOf(::RomajiTableEntry,
+                    "input" to string,
+                    "output" to string,
+                    "next_input" to string default ""
+                  )
+              ))
             }
+            .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
             .toMap()
       } catch (e: IOException) {
         emptyMap<String, RomajiConverter.Output>()
