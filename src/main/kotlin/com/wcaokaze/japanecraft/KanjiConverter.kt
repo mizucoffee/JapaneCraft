@@ -25,7 +25,7 @@ class KanjiConverter {
             .joinToString(",")
 
         URL("http://www.google.com/transliterate?langpair=ja-Hira|ja&text="
-            + encodedHiraganaList)
+            + encodedHiraganaList + ',')
             .openStream().reader().buffered().use {
               parseJson(it, list(googleCgiEntry))
             }
