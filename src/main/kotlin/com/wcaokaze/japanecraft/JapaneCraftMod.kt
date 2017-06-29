@@ -8,6 +8,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import cpw.mods.fml.common.network.NetworkCheckHandler
 import cpw.mods.fml.relauncher.Side
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration
@@ -18,8 +20,9 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "0.4.0")
+@Mod(modid = "japanecraft", version = "1.0.0")
 class JapaneCraftMod {
+  private val kanjiConverter = KanjiConverter()
   private lateinit var romajiConverter: RomajiConverter
   private lateinit var timeFormatter: DateFormat
   private lateinit var variableExpander: VariableExpander
@@ -74,23 +77,25 @@ class JapaneCraftMod {
 
   @SubscribeEvent
   fun onServerChat(event: ServerChatEvent) {
-    val (rawMessage, convertedMessage) = event.convertMessage()
+    launch (CommonPool) {
+      val (rawMessage, convertedMessage) = event.convertMessage()
 
-    val variableMap = mapOf(
-        "n"                to "\n",
-        "$"                to "\$",
-        "username"         to event.username,
-        "time"             to timeFormatter.format(Date()),
-        "rawMessage"       to rawMessage,
-        "convertedMessage" to convertedMessage
-    )
+      val variableMap = mapOf(
+          "n"                to "\n",
+          "$"                to "\$",
+          "username"         to event.username,
+          "time"             to timeFormatter.format(Date()),
+          "rawMessage"       to rawMessage,
+          "convertedMessage" to convertedMessage
+      )
 
-    variableExpander.expand(variableMap).split('\n').forEach {
-      FMLCommonHandler
-          .instance()
-          .minecraftServerInstance
-          .configurationManager
-          .sendChatMsg(ChatComponentText(it))
+      variableExpander.expand(variableMap).split('\n').forEach {
+        FMLCommonHandler
+            .instance()
+            .minecraftServerInstance
+            .configurationManager
+            .sendChatMsg(ChatComponentText(it))
+      }
     }
 
     event.isCanceled = true
@@ -101,47 +106,56 @@ class JapaneCraftMod {
     return true
   }
 
-  private fun ServerChatEvent.convertMessage(): Pair<String, String> {
+  private suspend fun ServerChatEvent.convertMessage(): Pair<String, String> {
+    if (message.any { it >= 0x80.toChar() }) return "" to message
+
     val enMsg = message
     val jpMsg = enMsg.toJapanese()
 
-    return when {
-      //                                     raw   to converted
-      enMsg.any { it >= 0x80.toChar() }   -> ""    to enMsg
-      enMsg.filter { it != '`' } == jpMsg -> ""    to enMsg
-      else                                -> enMsg to jpMsg
-    }
+    if (enMsg.filter { it != '`' } == jpMsg) return "" to enMsg
+
+    return enMsg to jpMsg
   }
 
-  private fun String.toJapanese(): String {
-    val romajiStr = this
+  suspend fun String.toJapanese(): String {
+    try {
+      class Chunk(val str: String, val shouldConvert: Boolean)
 
-    return buildString {
-      for ((index, str) in romajiStr.split('`').withIndex()) {
+      val chunkList = LinkedList<Chunk>()
+
+      for ((index, str) in split('`').withIndex()) {
         if (index % 2 != 0) {
-          append(str)
+          chunkList += Chunk(str, false)
         } else {
-          for (word in str.split(' ')) {
-            when {
-              word.isEmpty() -> {
-                append(' ')
-              }
-
-              word.first().isUpperCase() -> {
-                append(word)
-                append(' ')
-              }
-
-              else -> {
-                append(romajiConverter.convert(word))
-                append(' ')
-              }
+          for (word in str.split(' ').filter(String::isNotEmpty)) {
+            if (word.first().isUpperCase()) {
+              chunkList += Chunk(word + ' ', false)
+            } else {
+              chunkList += Chunk(word, true)
             }
           }
-
-          deleteCharAt(lastIndex)
         }
       }
+
+      val convertedStrs = chunkList
+          .filter { it.shouldConvert }
+          .map { romajiConverter.convert(it.str) }
+          .let { kanjiConverter.convert(it) }
+          .await()
+
+      val convertedStrIterator = convertedStrs.iterator()
+
+      return chunkList
+          .map {
+            if (it.shouldConvert) {
+              convertedStrIterator.next().kanjiList.first()
+            } else {
+              it.str
+            }
+          }
+          .joinToString("")
+    } catch (e: Exception) {
+      return this
     }
   }
 
