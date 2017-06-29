@@ -37,11 +37,11 @@ class JapaneCraftMod {
         reader().buffered()
             .use {
               parseJson(it, list(
-                  instanceOf(::RomajiTableEntry,
-                    "input" to string,
-                    "output" to string,
-                    "next_input" to string default ""
-                  )
+                  instance {
+                    RomajiTableEntry(it["input", string],
+                                     it["output", string],
+                                     it["next_input", string, ""])
+                  }
               ))
             }
             .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
