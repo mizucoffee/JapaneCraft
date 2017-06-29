@@ -107,15 +107,14 @@ class JapaneCraftMod {
   }
 
   private suspend fun ServerChatEvent.convertMessage(): Pair<String, String> {
+    if (message.any { it >= 0x80.toChar() }) return "" to message
+
     val enMsg = message
     val jpMsg = enMsg.toJapanese()
 
-    return when {
-      //                                     raw   to converted
-      enMsg.any { it >= 0x80.toChar() }   -> ""    to enMsg
-      enMsg.filter { it != '`' } == jpMsg -> ""    to enMsg
-      else                                -> enMsg to jpMsg
-    }
+    if (enMsg.filter { it != '`' } == jpMsg) return "" to enMsg
+
+    return enMsg to jpMsg
   }
 
   suspend fun String.toJapanese(): String {
