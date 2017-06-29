@@ -128,7 +128,7 @@ class JapaneCraftMod {
         if (index % 2 != 0) {
           chunkList += Chunk(str, false)
         } else {
-          for (word in str.split(' ')) {
+          for (word in str.split(' ').filter(String::isNotEmpty)) {
             if (word.first().isUpperCase()) {
               chunkList += Chunk(word + ' ', false)
             } else {
