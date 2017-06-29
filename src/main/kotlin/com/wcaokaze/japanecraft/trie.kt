@@ -20,7 +20,9 @@ private class MutableTrie<V>(override var value: V?) : Trie<V> {
   }
 }
 
-fun <V> trieOf(vararg pairs: Pair<String, V>): Trie<V> {
+fun <V> trieOf(vararg pairs: Pair<String, V>): Trie<V> = mapOf(*pairs).toTrie()
+
+fun <V> Map<String, V>.toTrie(): Trie<V> {
   fun MutableTrie<V>.getOrCreateChild(char: Char): MutableTrie<V> {
     var child = this[char]
 
@@ -34,7 +36,7 @@ fun <V> trieOf(vararg pairs: Pair<String, V>): Trie<V> {
 
   val trie = MutableTrie<V>(null)
 
-  for ((str, value) in pairs) {
+  for ((str, value) in this) {
     str.fold (trie) { t, c -> t.getOrCreateChild(c) } .value = value
   }
 
