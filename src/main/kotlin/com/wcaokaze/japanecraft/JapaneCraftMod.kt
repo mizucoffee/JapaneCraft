@@ -18,7 +18,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "0.3.2")
+@Mod(modid = "japanecraft", version = "0.4.0")
 class JapaneCraftMod {
   private lateinit var romajiConverter: RomajiConverter
   private lateinit var timeFormatter: DateFormat
