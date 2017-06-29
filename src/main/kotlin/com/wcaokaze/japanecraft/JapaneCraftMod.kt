@@ -20,7 +20,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "0.4.0")
+@Mod(modid = "japanecraft", version = "1.0.0")
 class JapaneCraftMod {
   private val kanjiConverter = KanjiConverter()
   private lateinit var romajiConverter: RomajiConverter
