@@ -31,6 +31,7 @@ minecraft {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.16"
     compile fileTree(dir: 'lib', include: ['*.jar'])
     testCompile 'junit:junit:4.+'
     // you may put jars on which you depend on in ./libs
@@ -69,4 +70,5 @@ processResources
 }
 repositories {
     mavenCentral()
+    jcenter()
 }
