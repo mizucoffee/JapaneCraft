@@ -84,7 +84,7 @@ class JapaneCraftMod {
   }
 
   private enum class Language { ENGLISH, ROMAJI, HIRAGANA, KANJI }
-  private data class Chunk(val str: String, val language: Language)
+  private data class Chunk(val word: String, val language: Language)
 
   private suspend fun String.toJapanese(): String {
     try {
@@ -93,7 +93,7 @@ class JapaneCraftMod {
       if (kanjiConverter != null) {
         val kanjiList = chunkList
             .filter { it.language == Language.ROMAJI }
-            .map { romajiConverter.convert(it.str) }
+            .map { romajiConverter.convert(it.word) }
             .let { kanjiConverter!!.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
             .toMutableList()
@@ -105,12 +105,12 @@ class JapaneCraftMod {
         val chunkListIterator = chunkList.listIterator()
 
         return buildString {
-          for ((str, language) in chunkListIterator) {
+          for ((word, language) in chunkListIterator) {
             when (language) {
               Language.ROMAJI -> append(kanjiList.removeAt(0))
 
               Language.ENGLISH -> {
-                append(str)
+                append(word)
 
                 val shouldInsertSpace = with (chunkListIterator) {
                   hasNext() && peekNext().language == Language.ENGLISH
@@ -126,8 +126,8 @@ class JapaneCraftMod {
       } else {
         return chunkList.map {
           when (it.language) {
-            Language.ENGLISH -> it.str
-            Language.ROMAJI  -> romajiConverter.convert(it.str)
+            Language.ENGLISH -> it.word
+            Language.ROMAJI  -> romajiConverter.convert(it.word)
             else             -> throw AssertionError()
           }
         } .joinToString(" ")
