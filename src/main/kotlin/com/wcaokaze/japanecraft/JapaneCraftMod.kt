@@ -41,7 +41,7 @@ class JapaneCraftMod {
   @SubscribeEvent
   fun onServerChat(event: ServerChatEvent) {
     launch (CommonPool) {
-      val (rawMessage, convertedMessage) = event.convertMessage()
+      val (rawMessage, convertedMessage) = convert(event.message)
 
       val variableMap = mapOf(
           "n"                to "\n",
@@ -69,7 +69,7 @@ class JapaneCraftMod {
     return true
   }
 
-  private suspend fun ServerChatEvent.convertMessage(): Pair<String, String> {
+  private suspend fun convert(message: String): Pair<String, String> {
     if (message.any { it >= 0x80.toChar() }) return "" to message
 
     val enMsg = message
