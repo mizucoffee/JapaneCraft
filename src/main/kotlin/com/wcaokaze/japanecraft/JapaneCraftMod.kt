@@ -80,25 +80,11 @@ class JapaneCraftMod {
     return enMsg to jpMsg
   }
 
+  private class Chunk(val str: String, val shouldConvert: Boolean)
+
   suspend fun String.toJapanese(): String {
     try {
-      class Chunk(val str: String, val shouldConvert: Boolean)
-
-      val chunkList = LinkedList<Chunk>()
-
-      for ((index, str) in split('`').withIndex()) {
-        if (index % 2 != 0) {
-          chunkList += Chunk(str, false)
-        } else {
-          for (word in str.split(' ').filter(String::isNotEmpty)) {
-            if (word.first().isLowerCase()) {
-              chunkList += Chunk(word, true)
-            } else {
-              chunkList += Chunk(word, false)
-            }
-          }
-        }
-      }
+      val chunkList = resolveIntoChunks(this)
 
       val hiraganaList = chunkList
           .filter { it.shouldConvert }
@@ -143,5 +129,25 @@ class JapaneCraftMod {
     } catch (e: Exception) {
       return this
     }
+  }
+
+  private fun resolveIntoChunks(str: String): List<Chunk> {
+    val chunkList = LinkedList<Chunk>()
+
+    for ((index, surroundedStr) in str.split('`').withIndex()) {
+      if (index % 2 != 0) {
+        chunkList += Chunk(surroundedStr, false)
+      } else {
+        for (word in surroundedStr.split(' ').filter(String::isNotEmpty)) {
+          if (word.first().isLowerCase()) {
+            chunkList += Chunk(word, true)
+          } else {
+            chunkList += Chunk(word, false)
+          }
+        }
+      }
+    }
+
+    return chunkList
   }
 }
