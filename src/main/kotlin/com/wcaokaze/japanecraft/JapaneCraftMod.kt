@@ -93,18 +93,18 @@ class JapaneCraftMod {
             .map { romajiConverter.convert(it.str) }
             .let { kanjiConverter!!.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
+            .toMutableList()
 
         if (chunkList.count { it.shouldConvert } != kanjiList.size) {
           throw JsonParseException()
         }
 
         val chunkListIterator = chunkList.listIterator()
-        val kanjiListIterator = kanjiList.iterator()
 
         return buildString {
           for (chunk in chunkListIterator) {
             if (chunk.shouldConvert) {
-              append(kanjiListIterator.next())
+              append(kanjiList.removeAt(0))
             } else {
               append(chunk.str)
 
