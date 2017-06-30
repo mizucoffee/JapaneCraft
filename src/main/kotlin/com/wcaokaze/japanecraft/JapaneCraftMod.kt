@@ -110,11 +110,7 @@ class JapaneCraftMod {
 
               val shouldInsertSpace = run {
                 if (!chunkListIterator.hasNext()) return@run false
-
-                val nextIsAlsoEnglish = !chunkListIterator.next().shouldConvert
-                chunkListIterator.previous()
-
-                return@run nextIsAlsoEnglish
+                return@run !chunkListIterator.peekNext().shouldConvert
               }
 
               if (shouldInsertSpace) append(' ')
@@ -148,5 +144,11 @@ class JapaneCraftMod {
     }
 
     return chunkList
+  }
+
+  private fun <T> ListIterator<T>.peekNext(): T {
+    val next = next()
+    previous()
+    return next
   }
 }
