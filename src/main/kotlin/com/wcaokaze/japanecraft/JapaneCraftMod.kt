@@ -82,7 +82,7 @@ class JapaneCraftMod {
 
   private class Chunk(val str: String, val shouldConvert: Boolean)
 
-  suspend fun String.toJapanese(): String {
+  private suspend fun String.toJapanese(): String {
     try {
       val chunkList = resolveIntoChunks(this)
 
