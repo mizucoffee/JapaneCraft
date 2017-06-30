@@ -21,6 +21,7 @@ import java.util.*
 class JapaneCraftMod {
   private var kanjiConverter: KanjiConverter? = null
   private lateinit var romajiConverter: RomajiConverter
+  private lateinit var dictionary: Dictionary
   private lateinit var timeFormatter: DateFormat
   private lateinit var variableExpander: VariableExpander
 
@@ -29,6 +30,7 @@ class JapaneCraftMod {
     val configuration = Configuration.load()
 
     romajiConverter = RomajiConverter(configuration.romajiTable)
+    dictionary = Dictionary(configuration.dictionary)
     variableExpander = VariableExpander(configuration.chatMsgFormat)
     timeFormatter = SimpleDateFormat(configuration.timeFormat)
     if (configuration.kanjiConverterEnabled) kanjiConverter = KanjiConverter()

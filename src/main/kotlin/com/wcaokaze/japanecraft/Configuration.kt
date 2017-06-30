@@ -9,6 +9,9 @@ class Configuration private constructor() {
   lateinit var romajiTable: Map<String, RomajiConverter.Output>
     private set
 
+  lateinit var dictionary: Map<String, String>
+    private set
+
   lateinit var chatMsgFormat: String
     private set
 
@@ -20,7 +23,34 @@ class Configuration private constructor() {
 
   companion object {
     fun load(): Configuration = Configuration().apply {
-      romajiTable = loadRomajiTable(File("config/JapaneCraftRomajiTable.json"))
+      class RomajiTableEntry(val input: String,
+                             val output: String,
+                             val nextInput: String)
+
+      val romajiTableEntry = instance {
+        RomajiTableEntry(it["input", string],
+                         it["output", string],
+                         it["next_input", string, ""])
+      }
+
+      romajiTable =
+          loadJson(File("config/JapaneCraftRomajiTable.json"),
+                   list(romajiTableEntry),
+                   defaultRomajiTableJson)
+          .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
+          .toMap()
+
+      dictionary =
+          loadJson(File("config/JapaneCraftDictionary.json"), map(string)) {
+            """
+              {
+                "いし": "石",
+                "すけさん": "スケさん",
+                "くも": "クモ",
+                "つるはし": "ツルハシ"
+              }
+            """.trimIndent()
+          }
 
       loadConfig(File("config/JapaneCraft.cfg")) {
         chatMsgFormat = it.loadString(
@@ -64,31 +94,16 @@ class Configuration private constructor() {
                                          comment: String)
         = getBoolean(key, category, default, comment)
 
-    private fun loadRomajiTable(file: File): Map<String, RomajiConverter.Output> {
-      try {
-        if (!file.exists()) file.createDefaultRomajiTableJson()
+    private fun <T> loadJson(file: File,
+                             jsonConverter: JsonConverter<T>,
+                             defaultLazy: () -> String): T
+    {
+      if (!file.exists()) file.writeText(defaultLazy())
 
-        class RomajiTableEntry(val input: String,
-                               val output: String,
-                               val nextInput: String)
-
-        val romajiTableEntry
-            = instance {
-              RomajiTableEntry(it["input", string],
-                               it["output", string],
-                               it["next_input", string, ""])
-            }
-
-        return file.reader().buffered()
-            .use { parseJson(it, list(romajiTableEntry)) }
-            .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
-            .toMap()
-      } catch (e: IOException) {
-        return emptyMap()
-      }
+      return file.reader().buffered().use { parseJson(it, jsonConverter) }
     }
 
-    private fun File.createDefaultRomajiTableJson() = writeText("""
+    private val defaultRomajiTableJson = { """
       [
         { "input": "-",          "output": "ー"                              },
         { "input": "~",          "output": "〜"                              },
@@ -403,6 +418,6 @@ class Configuration private constructor() {
         { "input": "whe",        "output": "うぇ"                            },
         { "input": "who",        "output": "うぉ"                            }
       ]
-    """.trimIndent())
+    """.trimIndent() }
   }
 }
