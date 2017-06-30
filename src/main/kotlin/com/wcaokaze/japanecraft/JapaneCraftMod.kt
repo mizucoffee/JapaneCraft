@@ -22,7 +22,7 @@ import java.util.*
 
 @Mod(modid = "japanecraft", version = "1.0.0")
 class JapaneCraftMod {
-  private val kanjiConverter = KanjiConverter()
+  private var kanjiConverter: KanjiConverter? = null
   private lateinit var romajiConverter: RomajiConverter
   private lateinit var timeFormatter: DateFormat
   private lateinit var variableExpander: VariableExpander
@@ -67,6 +67,12 @@ class JapaneCraftMod {
           "HH:mm:ss", "The format for `\$time` in chat format")
 
       timeFormatter = SimpleDateFormat(timeFormat)
+
+      if (it.getBoolean("enableConvertingToKanji", "mode", true,
+          "Whether to convert hiragana to kanji"))
+      {
+        kanjiConverter = KanjiConverter()
+      }
     }
   }
 
@@ -137,18 +143,22 @@ class JapaneCraftMod {
         }
       }
 
-      val convertedStrs = chunkList
+      val hiraganaList = chunkList
           .filter { it.shouldConvert }
           .map { romajiConverter.convert(it.str) }
-          .let { kanjiConverter.convert(it) }
-          .await()
 
-      val convertedStrIterator = convertedStrs.iterator()
+      val convertedStrList = kanjiConverter
+          ?.convert(hiraganaList)
+          ?.await()
+          ?.map { it.kanjiList.first() }
+          ?: hiraganaList
+
+      val convertedStrIterator = convertedStrList.iterator()
 
       return chunkList
           .map {
             if (it.shouldConvert) {
-              convertedStrIterator.next().kanjiList.first()
+              convertedStrIterator.next()
             } else {
               it.str
             }
