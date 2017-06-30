@@ -5,42 +5,42 @@ import java.io.File
 import java.io.IOException
 import net.minecraftforge.common.config.Configuration as ConfigLoader
 
-class Configuration
-    private constructor(val romajiTable: Map<String, RomajiConverter.Output>,
-                        val chatMsgFormat: String,
-                        val timeFormat: String,
-                        val kanjiConverterEnabled: Boolean)
-{
+class Configuration private constructor() {
+  lateinit var romajiTable: Map<String, RomajiConverter.Output>
+    private set
+
+  lateinit var chatMsgFormat: String
+    private set
+
+  lateinit var timeFormat: String
+    private set
+
+  var kanjiConverterEnabled: Boolean = false
+    private set
+
   companion object {
-    fun load(): Configuration {
-      val romajiTable = loadRomajiTable(File("config/JapaneCraftRomajiTable.json"))
+    fun load(): Configuration = Configuration().apply {
+      romajiTable = loadRomajiTable(File("config/JapaneCraftRomajiTable.json"))
 
       loadConfig(File("config/JapaneCraft.cfg")) {
-        val chatMsgFormat = it.loadString(
+        chatMsgFormat = it.loadString(
             category = "format",
             key      = "chat",
             default  = "<\$username> \$rawMessage\$n  §b\$convertedMessage",
             comment  = "The format for chat messages")
 
-        val timeFormat = it.loadString(
+        timeFormat = it.loadString(
             category = "format",
             key      = "time",
             default  = "HH:mm:ss",
             comment  = "The format for `\$time` in chat format")
 
-        val kanjiConverterEnabled = it.loadBoolean(
+        kanjiConverterEnabled = it.loadBoolean(
             category = "mode",
             key      = "enableConvertingToKanji",
             default  = true,
             comment  = "Whether to convert hiragana to kanji")
-
-        return Configuration(romajiTable,
-                             chatMsgFormat,
-                             timeFormat,
-                             kanjiConverterEnabled)
       }
-
-      throw AssertionError()
     }
 
     private inline fun loadConfig
