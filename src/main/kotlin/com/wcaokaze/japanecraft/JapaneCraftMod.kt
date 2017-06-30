@@ -137,7 +137,7 @@ class JapaneCraftMod {
             if (word.first().isLowerCase()) {
               chunkList += Chunk(word, true)
             } else {
-              chunkList += Chunk(word + ' ', false)
+              chunkList += Chunk(word, false)
             }
           }
         }
@@ -153,17 +153,29 @@ class JapaneCraftMod {
           ?.map { it.kanjiList.first() }
           ?: hiraganaList
 
+      val chunkListIterator = chunkList.listIterator()
       val convertedStrIterator = convertedStrList.iterator()
 
-      return chunkList
-          .map {
-            if (it.shouldConvert) {
-              convertedStrIterator.next()
-            } else {
-              it.str
+      return buildString {
+        for (chunk in chunkListIterator) {
+          if (chunk.shouldConvert) {
+            append(convertedStrIterator.next())
+          } else {
+            append(chunk.str)
+
+            val shouldInsertSpace = run {
+              if (!chunkListIterator.hasNext()) return@run false
+
+              val nextIsAlsoEnglish = !chunkListIterator.next().shouldConvert
+              chunkListIterator.previous()
+
+              return@run nextIsAlsoEnglish
             }
+
+            if (shouldInsertSpace) append(' ')
           }
-          .joinToString("")
+        }
+      }
     } catch (e: Exception) {
       return this
     }
