@@ -1,5 +1,6 @@
 package com.wcaokaze.japanecraft
 
+import com.wcaokaze.json.JsonParseException
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
@@ -91,7 +92,11 @@ class JapaneCraftMod {
             .filter { it.shouldConvert }
             .map { romajiConverter.convert(it.str) }
             .let { kanjiConverter!!.convert(it).await() }
-            .map { it.kanjiList.first() }
+            .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
+
+        if (chunkList.count { it.shouldConvert } != kanjiList.size) {
+          throw JsonParseException()
+        }
 
         val chunkListIterator = chunkList.listIterator()
         val kanjiListIterator = kanjiList.iterator()
