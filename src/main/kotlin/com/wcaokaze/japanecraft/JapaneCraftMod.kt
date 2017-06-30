@@ -147,34 +147,41 @@ class JapaneCraftMod {
           .filter { it.shouldConvert }
           .map { romajiConverter.convert(it.str) }
 
-      val convertedStrList = kanjiConverter
-          ?.convert(hiraganaList)
-          ?.await()
-          ?.map { it.kanjiList.first() }
-          ?: hiraganaList
+      if (kanjiConverter != null) {
+        val convertedStrList = kanjiConverter!!
+            .convert(hiraganaList)
+            .await()
+            .map { it.kanjiList.first() }
 
-      val chunkListIterator = chunkList.listIterator()
-      val convertedStrIterator = convertedStrList.iterator()
+        val chunkListIterator = chunkList.listIterator()
+        val convertedStrIterator = convertedStrList.iterator()
 
-      return buildString {
-        for (chunk in chunkListIterator) {
-          if (chunk.shouldConvert) {
-            append(convertedStrIterator.next())
-          } else {
-            append(chunk.str)
+        return buildString {
+          for (chunk in chunkListIterator) {
+            if (chunk.shouldConvert) {
+              append(convertedStrIterator.next())
+            } else {
+              append(chunk.str)
 
-            val shouldInsertSpace = run {
-              if (!chunkListIterator.hasNext()) return@run false
+              val shouldInsertSpace = run {
+                if (!chunkListIterator.hasNext()) return@run false
 
-              val nextIsAlsoEnglish = !chunkListIterator.next().shouldConvert
-              chunkListIterator.previous()
+                val nextIsAlsoEnglish = !chunkListIterator.next().shouldConvert
+                chunkListIterator.previous()
 
-              return@run nextIsAlsoEnglish
+                return@run nextIsAlsoEnglish
+              }
+
+              if (shouldInsertSpace) append(' ')
             }
-
-            if (shouldInsertSpace) append(' ')
           }
         }
+      } else {
+        val convertedStrIterator = hiraganaList.iterator()
+
+        return chunkList.map {
+          if (it.shouldConvert) convertedStrIterator.next() else it.str
+        }.joinToString(" ")
       }
     } catch (e: Exception) {
       return this
