@@ -83,7 +83,8 @@ class JapaneCraftMod {
     return enMsg to jpMsg
   }
 
-  private data class Chunk(val str: String, val shouldConvert: Boolean)
+  private enum class Language { ENGLISH, ROMAJI, HIRAGANA, KANJI }
+  private data class Chunk(val str: String, val language: Language)
 
   private suspend fun String.toJapanese(): String {
     try {
@@ -91,36 +92,44 @@ class JapaneCraftMod {
 
       if (kanjiConverter != null) {
         val kanjiList = chunkList
-            .filter { it.shouldConvert }
+            .filter { it.language == Language.ROMAJI }
             .map { romajiConverter.convert(it.str) }
             .let { kanjiConverter!!.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
             .toMutableList()
 
-        if (chunkList.count { it.shouldConvert } != kanjiList.size) {
+        if (chunkList.count { it.language == Language.ROMAJI } != kanjiList.size) {
           throw JsonParseException()
         }
 
         val chunkListIterator = chunkList.listIterator()
 
         return buildString {
-          for ((str, isConverted) in chunkListIterator) {
-            if (isConverted) {
-              append(kanjiList.removeAt(0))
-            } else {
-              append(str)
+          for ((str, language) in chunkListIterator) {
+            when (language) {
+              Language.ROMAJI -> append(kanjiList.removeAt(0))
 
-              val shouldInsertSpace = with (chunkListIterator) {
-                hasNext() && !peekNext().shouldConvert
+              Language.ENGLISH -> {
+                append(str)
+
+                val shouldInsertSpace = with (chunkListIterator) {
+                  hasNext() && peekNext().language == Language.ENGLISH
+                }
+
+                if (shouldInsertSpace) append(' ')
               }
 
-              if (shouldInsertSpace) append(' ')
+              else -> throw AssertionError()
             }
           }
         }
       } else {
         return chunkList.map {
-          if (it.shouldConvert) romajiConverter.convert(it.str) else it.str
+          when (it.language) {
+            Language.ENGLISH -> it.str
+            Language.ROMAJI  -> romajiConverter.convert(it.str)
+            else             -> throw AssertionError()
+          }
         } .joinToString(" ")
       }
     } catch (e: Exception) {
@@ -133,13 +142,19 @@ class JapaneCraftMod {
 
     for ((index, surroundedStr) in str.split('`').withIndex()) {
       if (index % 2 != 0) {
-        if (surroundedStr != "") chunkList += Chunk(surroundedStr, false)
+        if (surroundedStr != "") {
+          chunkList += Chunk(surroundedStr, Language.ENGLISH)
+        }
       } else {
         surroundedStr
             .split(' ')
             .filter(String::isNotEmpty)
             .forEach { word ->
-              chunkList += Chunk(word, word.first().isLowerCase())
+              if (word.first().isLowerCase()) {
+                chunkList += Chunk(word, Language.ROMAJI)
+              } else {
+                chunkList += Chunk(word, Language.ENGLISH)
+              }
             }
       }
     }
