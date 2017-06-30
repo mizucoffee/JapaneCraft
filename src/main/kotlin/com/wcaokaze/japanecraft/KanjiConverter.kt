@@ -20,6 +20,8 @@ class KanjiConverter {
 
   suspend fun convert(hiraganaList: List<String>): Deferred<List<GoogleCgiEntry>>
       = async (CommonPool) {
+        if (hiraganaList.isEmpty()) return@async emptyList<GoogleCgiEntry>()
+
         val encodedHiraganaList = hiraganaList
             .map { URLEncoder.encode(it, "UTF-8") }
             .joinToString(",")

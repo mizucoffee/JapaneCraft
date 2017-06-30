@@ -108,11 +108,11 @@ class JapaneCraftMod {
             } else {
               append(str)
 
-              val nextIsConverted = with (chunkListIterator) {
-                hasNext() && peekNext().shouldConvert
+              val shouldInsertSpace = with (chunkListIterator) {
+                hasNext() && !peekNext().shouldConvert
               }
 
-              if (!nextIsConverted) append(' ')
+              if (shouldInsertSpace) append(' ')
             }
           }
         }
@@ -131,7 +131,7 @@ class JapaneCraftMod {
 
     for ((index, surroundedStr) in str.split('`').withIndex()) {
       if (index % 2 != 0) {
-        chunkList += Chunk(surroundedStr, false)
+        if (surroundedStr != "") chunkList += Chunk(surroundedStr, false)
       } else {
         surroundedStr
             .split(' ')
