@@ -81,7 +81,7 @@ class JapaneCraftMod {
     return enMsg to jpMsg
   }
 
-  private class Chunk(val str: String, val shouldConvert: Boolean)
+  private data class Chunk(val str: String, val shouldConvert: Boolean)
 
   private suspend fun String.toJapanese(): String {
     try {
@@ -102,18 +102,17 @@ class JapaneCraftMod {
         val chunkListIterator = chunkList.listIterator()
 
         return buildString {
-          for (chunk in chunkListIterator) {
-            if (chunk.shouldConvert) {
+          for ((str, isConverted) in chunkListIterator) {
+            if (isConverted) {
               append(kanjiList.removeAt(0))
             } else {
-              append(chunk.str)
+              append(str)
 
-              val shouldInsertSpace = run {
-                if (!chunkListIterator.hasNext()) return@run false
-                return@run !chunkListIterator.peekNext().shouldConvert
+              val nextIsConverted = with (chunkListIterator) {
+                hasNext() && peekNext().shouldConvert
               }
 
-              if (shouldInsertSpace) append(' ')
+              if (!nextIsConverted) append(' ')
             }
           }
         }
