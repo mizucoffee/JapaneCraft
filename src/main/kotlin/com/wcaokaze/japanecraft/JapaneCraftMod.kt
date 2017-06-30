@@ -140,23 +140,21 @@ class JapaneCraftMod {
   private fun resolveIntoChunks(str: String): List<Chunk> {
     val chunkList = LinkedList<Chunk>()
 
-    for ((index, surroundedStr) in str.split('`').withIndex()) {
-      if (index % 2 != 0) {
-        if (surroundedStr != "") {
-          chunkList += Chunk(surroundedStr, Language.ENGLISH)
-        }
-      } else {
-        surroundedStr
-            .split(' ')
-            .filter(String::isNotEmpty)
-            .forEach { word ->
-              if (word.first().isLowerCase()) {
-                chunkList += Chunk(word, Language.ROMAJI)
-              } else {
-                chunkList += Chunk(word, Language.ENGLISH)
-              }
+    for ((index, block) in str.split('`').withIndex()) {
+      val isEnglishBlock = index % 2 != 0
+
+      block
+          .split(' ')
+          .filter(String::isNotEmpty)
+          .forEach { word ->
+            val language = when {
+              isEnglishBlock             -> Language.ENGLISH
+              word.first().isLowerCase() -> Language.ROMAJI
+              else                       -> Language.ENGLISH
             }
-      }
+
+            chunkList += Chunk(word, language)
+          }
     }
 
     return chunkList
