@@ -9,7 +9,7 @@ Forgeサーバーに導入することで、チャットのローマ字を日本
 --------------------------------------------------------------------------------
 ### JapaneCraft.cfg
 
-- S:chat
+- format.S:chat
 
     チャットの表示フォーマット。
 
@@ -24,9 +24,13 @@ Forgeサーバーに導入することで、チャットのローマ字を日本
 
     デフォルト値は`<$username> $rawMessage$n  §b$convertedMessage`。
 
-- S:time
+- format.S:time
 
     時刻の表示フォーマット。`java.text.SimpleDateFormat`参照。
+
+- mode.B:enableConvertingToKanji
+
+    漢字への変換を利用するかどうか。
 
 ### JapaneCraftRomajiTable.json
 
