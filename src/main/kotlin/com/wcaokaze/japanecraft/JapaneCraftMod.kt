@@ -86,14 +86,11 @@ class JapaneCraftMod {
     try {
       val chunkList = resolveIntoChunks(this)
 
-      val hiraganaList = chunkList
-          .filter { it.shouldConvert }
-          .map { romajiConverter.convert(it.str) }
-
       if (kanjiConverter != null) {
-        val convertedStrList = kanjiConverter!!
-            .convert(hiraganaList)
-            .await()
+        val convertedStrList = chunkList
+            .filter { it.shouldConvert }
+            .map { romajiConverter.convert(it.str) }
+            .let { kanjiConverter!!.convert(it).await() }
             .map { it.kanjiList.first() }
 
         val chunkListIterator = chunkList.listIterator()
@@ -120,11 +117,9 @@ class JapaneCraftMod {
           }
         }
       } else {
-        val convertedStrIterator = hiraganaList.iterator()
-
         return chunkList.map {
-          if (it.shouldConvert) convertedStrIterator.next() else it.str
-        }.joinToString(" ")
+          if (it.shouldConvert) romajiConverter.convert(it.str) else it.str
+        } .joinToString(" ")
       }
     } catch (e: Exception) {
       return this
