@@ -137,28 +137,26 @@ class JapaneCraftMod {
     }
   }
 
-  private fun resolveIntoChunks(str: String): List<Chunk> {
-    val chunkList = LinkedList<Chunk>()
+  private fun resolveIntoChunks(str: String)
+      = str.split('`')
+        .withIndex()
+        .map {
+          val isEnglishBlock = it.index % 2 != 0
 
-    for ((index, block) in str.split('`').withIndex()) {
-      val isEnglishBlock = index % 2 != 0
+          it.value
+              .split(' ')
+              .filter(String::isNotEmpty)
+              .map { word ->
+                val language = when {
+                  isEnglishBlock             -> Language.ENGLISH
+                  word.first().isLowerCase() -> Language.ROMAJI
+                  else                       -> Language.ENGLISH
+                }
 
-      block
-          .split(' ')
-          .filter(String::isNotEmpty)
-          .forEach { word ->
-            val language = when {
-              isEnglishBlock             -> Language.ENGLISH
-              word.first().isLowerCase() -> Language.ROMAJI
-              else                       -> Language.ENGLISH
-            }
-
-            chunkList += Chunk(word, language)
-          }
-    }
-
-    return chunkList
-  }
+                Chunk(word, language)
+              }
+        }
+        .flatten()
 
   private fun <T> ListIterator<T>.peekNext(): T {
     val next = next()
