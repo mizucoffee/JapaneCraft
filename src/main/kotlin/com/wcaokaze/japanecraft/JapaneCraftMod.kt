@@ -87,19 +87,19 @@ class JapaneCraftMod {
       val chunkList = resolveIntoChunks(this)
 
       if (kanjiConverter != null) {
-        val convertedStrList = chunkList
+        val kanjiList = chunkList
             .filter { it.shouldConvert }
             .map { romajiConverter.convert(it.str) }
             .let { kanjiConverter!!.convert(it).await() }
             .map { it.kanjiList.first() }
 
         val chunkListIterator = chunkList.listIterator()
-        val convertedStrIterator = convertedStrList.iterator()
+        val kanjiListIterator = kanjiList.iterator()
 
         return buildString {
           for (chunk in chunkListIterator) {
             if (chunk.shouldConvert) {
-              append(convertedStrIterator.next())
+              append(kanjiListIterator.next())
             } else {
               append(chunk.str)
 
