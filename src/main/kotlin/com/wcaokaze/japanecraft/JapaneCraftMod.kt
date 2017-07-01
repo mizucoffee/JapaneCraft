@@ -89,16 +89,28 @@ class JapaneCraftMod {
   private suspend fun String.toJapanese(): String {
     try {
       val chunkList = resolveIntoChunks(this)
+          .map {
+            when (it.language) {
+              Language.ENGLISH -> it
+              Language.ROMAJI  -> Chunk(romajiConverter.convert(it.word),
+                                        Language.HIRAGANA)
+              else -> throw AssertionError()
+            }
+          }
+          .map { it.applyDictionary(dictionary) }
+          .flatten()
 
       if (kanjiConverter != null) {
         val kanjiList = chunkList
-            .filter { it.language == Language.ROMAJI }
-            .map { romajiConverter.convert(it.word) }
+            .filter { it.language == Language.HIRAGANA }
+            .map { it.word }
             .let { kanjiConverter!!.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
             .toMutableList()
 
-        if (chunkList.count { it.language == Language.ROMAJI } != kanjiList.size) {
+        if (chunkList.count { it.language == Language.HIRAGANA }
+            != kanjiList.size)
+        {
           throw JsonParseException()
         }
 
@@ -107,30 +119,21 @@ class JapaneCraftMod {
         return buildString {
           for ((word, language) in chunkListIterator) {
             when (language) {
-              Language.ROMAJI -> append(kanjiList.removeAt(0))
+              Language.HIRAGANA -> append(kanjiList.removeAt(0))
 
-              Language.ENGLISH -> {
+              else -> {
                 append(word)
 
-                val shouldInsertSpace = with (chunkListIterator) {
-                  hasNext() && peekNext().language == Language.ENGLISH
-                }
+                val nextLanguage = chunkListIterator.peekNextOrNull()?.language
 
-                if (shouldInsertSpace) append(' ')
+                if (language     == Language.ENGLISH &&
+                    nextLanguage == Language.ENGLISH) append(' ')
               }
-
-              else -> throw AssertionError()
             }
           }
         }
       } else {
-        return chunkList.map {
-          when (it.language) {
-            Language.ENGLISH -> it.word
-            Language.ROMAJI  -> romajiConverter.convert(it.word)
-            else             -> throw AssertionError()
-          }
-        } .joinToString(" ")
+        return chunkList.map { it.word }.joinToString(" ")
       }
     } catch (e: Exception) {
       return this
@@ -158,7 +161,36 @@ class JapaneCraftMod {
         }
         .flatten()
 
-  private fun <T> ListIterator<T>.peekNext(): T {
+  private fun Chunk.applyDictionary(dictionary: Dictionary): List<Chunk> {
+    val convertedChunkList = LinkedList<Chunk>()
+
+    fun loop(rawString: String) {
+      if (rawString.isEmpty()) return
+
+      dictionary[rawString]?.let { (converted, indices) ->
+        if (converted.isEmpty()) return
+
+        val language = if (converted.any { it >= 0x80.toChar() }) {
+          Language.KANJI
+        } else {
+          Language.ENGLISH
+        }
+
+        convertedChunkList += Chunk(converted, language)
+        loop(rawString.removeRange(indices))
+      } ?: run {
+        convertedChunkList += Chunk(rawString, language)
+      }
+    }
+
+    loop(word)
+
+    return convertedChunkList
+  }
+
+  private fun <T> ListIterator<T>.peekNextOrNull(): T? {
+    if (!hasNext()) return null
+
     val next = next()
     previous()
     return next
