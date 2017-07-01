@@ -21,6 +21,7 @@ import java.util.*
 class JapaneCraftMod {
   private var kanjiConverter: KanjiConverter? = null
   private lateinit var romajiConverter: RomajiConverter
+  private lateinit var dictionary: Dictionary
   private lateinit var timeFormatter: DateFormat
   private lateinit var variableExpander: VariableExpander
 
@@ -29,6 +30,7 @@ class JapaneCraftMod {
     val configuration = Configuration.load()
 
     romajiConverter = RomajiConverter(configuration.romajiTable)
+    dictionary = Dictionary(configuration.dictionary)
     variableExpander = VariableExpander(configuration.chatMsgFormat)
     timeFormatter = SimpleDateFormat(configuration.timeFormat)
     if (configuration.kanjiConverterEnabled) kanjiConverter = KanjiConverter()
@@ -81,71 +83,114 @@ class JapaneCraftMod {
     return enMsg to jpMsg
   }
 
-  private data class Chunk(val str: String, val shouldConvert: Boolean)
+  private enum class Language { ENGLISH, ROMAJI, HIRAGANA, KANJI }
+  private data class Chunk(val word: String, val language: Language)
 
   private suspend fun String.toJapanese(): String {
     try {
       val chunkList = resolveIntoChunks(this)
+          .map {
+            when (it.language) {
+              Language.ENGLISH -> it
+              Language.ROMAJI  -> Chunk(romajiConverter.convert(it.word),
+                                        Language.HIRAGANA)
+              else -> throw AssertionError()
+            }
+          }
+          .map { it.applyDictionary(dictionary) }
+          .flatten()
 
       if (kanjiConverter != null) {
         val kanjiList = chunkList
-            .filter { it.shouldConvert }
-            .map { romajiConverter.convert(it.str) }
+            .filter { it.language == Language.HIRAGANA }
+            .map { it.word }
             .let { kanjiConverter!!.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
             .toMutableList()
 
-        if (chunkList.count { it.shouldConvert } != kanjiList.size) {
+        if (chunkList.count { it.language == Language.HIRAGANA }
+            != kanjiList.size)
+        {
           throw JsonParseException()
         }
 
         val chunkListIterator = chunkList.listIterator()
 
         return buildString {
-          for ((str, isConverted) in chunkListIterator) {
-            if (isConverted) {
-              append(kanjiList.removeAt(0))
-            } else {
-              append(str)
+          for ((word, language) in chunkListIterator) {
+            when (language) {
+              Language.HIRAGANA -> append(kanjiList.removeAt(0))
 
-              val shouldInsertSpace = with (chunkListIterator) {
-                hasNext() && !peekNext().shouldConvert
+              else -> {
+                append(word)
+
+                val nextLanguage = chunkListIterator.peekNextOrNull()?.language
+
+                if (language     == Language.ENGLISH &&
+                    nextLanguage == Language.ENGLISH) append(' ')
               }
-
-              if (shouldInsertSpace) append(' ')
             }
           }
         }
       } else {
-        return chunkList.map {
-          if (it.shouldConvert) romajiConverter.convert(it.str) else it.str
-        } .joinToString(" ")
+        return chunkList.map { it.word }.joinToString(" ")
       }
     } catch (e: Exception) {
       return this
     }
   }
 
-  private fun resolveIntoChunks(str: String): List<Chunk> {
-    val chunkList = LinkedList<Chunk>()
+  private fun resolveIntoChunks(str: String)
+      = str.split('`')
+        .withIndex()
+        .map {
+          val isEnglishBlock = it.index % 2 != 0
 
-    for ((index, surroundedStr) in str.split('`').withIndex()) {
-      if (index % 2 != 0) {
-        if (surroundedStr != "") chunkList += Chunk(surroundedStr, false)
-      } else {
-        surroundedStr
-            .split(' ')
-            .filter(String::isNotEmpty)
-            .forEach { word ->
-              chunkList += Chunk(word, word.first().isLowerCase())
-            }
+          it.value
+              .split(' ')
+              .filter(String::isNotEmpty)
+              .map { word ->
+                val language = when {
+                  isEnglishBlock             -> Language.ENGLISH
+                  word.first().isLowerCase() -> Language.ROMAJI
+                  else                       -> Language.ENGLISH
+                }
+
+                Chunk(word, language)
+              }
+        }
+        .flatten()
+
+  private fun Chunk.applyDictionary(dictionary: Dictionary): List<Chunk> {
+    val convertedChunkList = LinkedList<Chunk>()
+
+    fun loop(rawString: String) {
+      if (rawString.isEmpty()) return
+
+      dictionary[rawString]?.let { (converted, indices) ->
+        if (converted.isEmpty()) return
+
+        val language = if (converted.any { it >= 0x80.toChar() }) {
+          Language.KANJI
+        } else {
+          Language.ENGLISH
+        }
+
+        convertedChunkList += Chunk(converted, language)
+        loop(rawString.removeRange(indices))
+      } ?: run {
+        convertedChunkList += Chunk(rawString, language)
       }
     }
 
-    return chunkList
+    loop(word)
+
+    return convertedChunkList
   }
 
-  private fun <T> ListIterator<T>.peekNext(): T {
+  private fun <T> ListIterator<T>.peekNextOrNull(): T? {
+    if (!hasNext()) return null
+
     val next = next()
     previous()
     return next
