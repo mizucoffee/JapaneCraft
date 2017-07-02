@@ -3,107 +3,124 @@ package com.wcaokaze.japanecraft
 import com.wcaokaze.json.*
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import kotlin.reflect.KProperty
 import net.minecraftforge.common.config.Configuration as ConfigLoader
 
-class Configuration private constructor() {
-  lateinit var romajiTable: Map<String, RomajiConverter.Output>
-    private set
+class Configuration {
+  val romajiConverter by autoReload(File("config/JapaneCraftRomajiTable.json")) {
+    if (!it.exists()) it.writeText(defaultRomajiTableJson())
 
-  lateinit var dictionary: Map<String, String>
-    private set
+    class RomajiTableEntry(val input: String,
+                           val output: String,
+                           val nextInput: String)
 
-  lateinit var chatMsgFormat: String
-    private set
+    val romajiTableEntry = instance {
+      RomajiTableEntry(it["input", string],
+                       it["output", string],
+                       it["next_input", string, ""])
+    }
 
-  lateinit var timeFormat: String
-    private set
+    val romajiTableMap =
+        loadJson(it, list(romajiTableEntry), defaultRomajiTableJson)
+        .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
+        .toMap()
 
-  var kanjiConverterEnabled: Boolean = false
-    private set
+    RomajiConverter(romajiTableMap)
+  }
 
-  companion object {
-    fun load(): Configuration = Configuration().apply {
-      class RomajiTableEntry(val input: String,
-                             val output: String,
-                             val nextInput: String)
+  val dictionary by autoReload(File("config/JapaneCraftDictionary.json")) {
+    val dictionaryMap =
+        loadJson(File("config/JapaneCraftDictionary.json"), map(string)) {
+          """
+            {
+              "いし": "石",
+              "すけさん": "スケさん",
+              "くも": "クモ",
+              "つるはし": "ツルハシ"
+            }
+          """.trimIndent()
+        }
 
-      val romajiTableEntry = instance {
-        RomajiTableEntry(it["input", string],
-                         it["output", string],
-                         it["next_input", string, ""])
+    Dictionary(dictionaryMap)
+  }
+
+  val kanjiConverterEnabled by autoReload(File("config/JapaneCraft.cfg")) {
+    it.loadBoolean(category = "mode",
+                   key      = "enableConvertingToKanji",
+                   default  = true,
+                   comment  = "Whether to convert hiragana to kanji")
+  }
+
+  val timeFormatter by autoReload(File("config/JapaneCraft.cfg")) {
+    val timeFormat = it.loadString(
+        category = "format",
+        key = "time",
+        default = "HH:mm:ss",
+        comment = "The format for `\$time` in chat format")
+
+    SimpleDateFormat(timeFormat)
+  }
+
+  val variableExpander by autoReload(File("config/JapaneCraft.cfg")) {
+    val chatMsgFormat = it.loadString(
+        category = "format",
+        key = "chat",
+        default = "<\$username> \$rawMessage\$n  §b\$convertedMessage",
+        comment = "The format for chat messages")
+
+    VariableExpander(chatMsgFormat)
+  }
+
+  private fun <T> autoReload(file: File, loadOperation: (File) -> T) = object {
+    private var loadDate = 0L
+    private var value: T? = null
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+      if (!file.exists() || loadDate < file.lastModified()) {
+        try {
+          value = loadOperation(file)
+        } catch (e: IOException) {
+          if (value == null) throw e
+        }
       }
 
-      romajiTable =
-          loadJson(File("config/JapaneCraftRomajiTable.json"),
-                   list(romajiTableEntry),
-                   defaultRomajiTableJson)
-          .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
-          .toMap()
+      return value!!
+    }
+  }
 
-      dictionary =
-          loadJson(File("config/JapaneCraftDictionary.json"), map(string)) {
-            """
-              {
-                "いし": "石",
-                "すけさん": "スケさん",
-                "くも": "クモ",
-                "つるはし": "ツルハシ"
-              }
-            """.trimIndent()
-          }
-
-      loadConfig(File("config/JapaneCraft.cfg")) {
-        chatMsgFormat = it.loadString(
-            category = "format",
-            key      = "chat",
-            default  = "<\$username> \$rawMessage\$n  §b\$convertedMessage",
-            comment  = "The format for chat messages")
-
-        timeFormat = it.loadString(
-            category = "format",
-            key      = "time",
-            default  = "HH:mm:ss",
-            comment  = "The format for `\$time` in chat format")
-
-        kanjiConverterEnabled = it.loadBoolean(
-            category = "mode",
-            key      = "enableConvertingToKanji",
-            default  = true,
-            comment  = "Whether to convert hiragana to kanji")
+  private fun File.loadString(category: String,
+                              key: String,
+                              default: String,
+                              comment: String): String
+      = with (ConfigLoader(this)) {
+        load()
+        val value = getString(key, category, default, comment)
+        save()
+        return value
       }
-    }
 
-    private inline fun loadConfig
-        (file: File, loadOperation: (ConfigLoader) -> Unit)
-    {
-      val configLoader = ConfigLoader(file)
-      configLoader.load()
-      loadOperation(configLoader)
-      configLoader.save()
-    }
+  private fun File.loadBoolean(category: String,
+                               key: String,
+                               default: Boolean,
+                               comment: String): Boolean
+      = with (ConfigLoader(this)) {
+        load()
+        val value = getBoolean(key, category, default, comment)
+        save()
+        return value
+      }
 
-    private fun ConfigLoader.loadString(category: String,
-                                        key: String,
-                                        default: String,
-                                        comment: String)
-        = getString(key, category, default, comment)
+  private fun <T> loadJson(file: File,
+                           jsonConverter: JsonConverter<T>,
+                           defaultLazy: () -> String): T
+  {
+    if (!file.exists()) file.writeText(defaultLazy())
 
-    private fun ConfigLoader.loadBoolean(category: String,
-                                         key: String,
-                                         default: Boolean,
-                                         comment: String)
-        = getBoolean(key, category, default, comment)
+    return file.reader().buffered().use { parseJson(it, jsonConverter) }
+  }
 
-    private fun <T> loadJson(file: File,
-                             jsonConverter: JsonConverter<T>,
-                             defaultLazy: () -> String): T
-    {
-      if (!file.exists()) file.writeText(defaultLazy())
-
-      return file.reader().buffered().use { parseJson(it, jsonConverter) }
-    }
-
-    private val defaultRomajiTableJson = { """
+  private val defaultRomajiTableJson = { """
       [
         { "input": "-",          "output": "ー"                              },
         { "input": "~",          "output": "〜"                              },
@@ -418,6 +435,5 @@ class Configuration private constructor() {
         { "input": "whe",        "output": "うぇ"                            },
         { "input": "who",        "output": "うぉ"                            }
       ]
-    """.trimIndent() }
-  }
+  """.trimIndent() }
 }
