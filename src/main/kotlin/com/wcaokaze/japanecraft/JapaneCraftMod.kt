@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "1.1.2")
+@Mod(modid = "japanecraft", version = "1.1.3")
 class JapaneCraftMod {
   private val configuration = Configuration()
   private val kanjiConverter = KanjiConverter()
