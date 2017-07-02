@@ -11,9 +11,9 @@ class Configuration {
   val wordSeparators by autoReload(File("config/JapaneCraft.cfg")) {
     it.loadString(
         category = "advanced",
-        key = "wordSeparator",
-        default = "\t\n \"'()<>@[]{}",
-        comment = null)
+        key      = "wordSeparator",
+        default  = " \"'()<>@[]{}",
+        comment  = "")
         .toCharArray()
   }
 
@@ -21,8 +21,8 @@ class Configuration {
     val pattern = it.loadString(
         category = "advanced",
         key      = "romajiRegex",
-        default  = "\\d*[a-z].*",
-        comment = null)
+        default  = "\\[|\\]|(\\d*[a-z].*)",
+        comment  = "")
 
     Regex(pattern)
   }
@@ -74,9 +74,9 @@ class Configuration {
   val timeFormatter by autoReload(File("config/JapaneCraft.cfg")) {
     val timeFormat = it.loadString(
         category = "format",
-        key = "time",
-        default = "HH:mm:ss",
-        comment = "The format for `\$time` in chat format")
+        key      = "time",
+        default  = "HH:mm:ss",
+        comment  = "The format for `\$time` in chat format")
 
     SimpleDateFormat(timeFormat)
   }
@@ -84,9 +84,9 @@ class Configuration {
   val variableExpander by autoReload(File("config/JapaneCraft.cfg")) {
     val chatMsgFormat = it.loadString(
         category = "format",
-        key = "chat",
-        default = "<\$username> \$rawMessage\$n  §b\$convertedMessage",
-        comment = "The format for chat messages")
+        key      = "chat",
+        default  = "<\$username> \$rawMessage\$n  §b\$convertedMessage",
+        comment  = "The format for chat messages")
 
     VariableExpander(chatMsgFormat)
   }
@@ -111,7 +111,7 @@ class Configuration {
   private fun File.loadString(category: String,
                               key: String,
                               default: String,
-                              comment: String?): String
+                              comment: String): String
       = with (ConfigLoader(this)) {
         load()
         val value = getString(key, category, default, comment)
@@ -122,7 +122,7 @@ class Configuration {
   private fun File.loadBoolean(category: String,
                                key: String,
                                default: Boolean,
-                               comment: String?): Boolean
+                               comment: String): Boolean
       = with (ConfigLoader(this)) {
         load()
         val value = getBoolean(key, category, default, comment)
