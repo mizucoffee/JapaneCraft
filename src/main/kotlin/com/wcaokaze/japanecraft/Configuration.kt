@@ -21,7 +21,7 @@ class Configuration {
     val pattern = it.loadString(
         category = "advanced",
         key      = "romajiRegex",
-        default  = "\\d*[a-z].*",
+        default  = "\\[|\\]|(\\d*[a-z].*)",
         comment  = "")
 
     Regex(pattern)
