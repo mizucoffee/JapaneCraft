@@ -12,8 +12,8 @@ class Configuration {
     it.loadString(
         category = "advanced",
         key = "wordSeparator",
-        default = "\t\n \"'()<>@[]{}",
-        comment = null)
+        default = " \"'()<>@[]{}",
+        comment = "")
         .toCharArray()
   }
 
@@ -22,7 +22,7 @@ class Configuration {
         category = "advanced",
         key      = "romajiRegex",
         default  = "\\d*[a-z].*",
-        comment = null)
+        comment = "")
 
     Regex(pattern)
   }
@@ -111,7 +111,7 @@ class Configuration {
   private fun File.loadString(category: String,
                               key: String,
                               default: String,
-                              comment: String?): String
+                              comment: String): String
       = with (ConfigLoader(this)) {
         load()
         val value = getString(key, category, default, comment)
@@ -122,7 +122,7 @@ class Configuration {
   private fun File.loadBoolean(category: String,
                                key: String,
                                default: Boolean,
-                               comment: String?): Boolean
+                               comment: String): Boolean
       = with (ConfigLoader(this)) {
         load()
         val value = getBoolean(key, category, default, comment)

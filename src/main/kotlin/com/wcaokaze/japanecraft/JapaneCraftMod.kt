@@ -123,6 +123,8 @@ class JapaneCraftMod {
         return chunkList.map { it.word }.joinToString(" ")
       }
     } catch (e: Exception) {
+      println(e.message)
+      e.stackTrace.forEach(::println)
       return this
     }
   }
@@ -189,7 +191,7 @@ class JapaneCraftMod {
       }
     }
 
-    if (i < lastIndex) splited += substring(i)
+    if (i <= lastIndex) splited += substring(i)
 
     return splited
   }
