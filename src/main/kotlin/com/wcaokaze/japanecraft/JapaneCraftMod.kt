@@ -4,7 +4,6 @@ import com.wcaokaze.json.JsonParseException
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
-import cpw.mods.fml.common.event.FMLPreInitializationEvent
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import cpw.mods.fml.common.network.NetworkCheckHandler
 import cpw.mods.fml.relauncher.Side
@@ -13,28 +12,12 @@ import kotlinx.coroutines.experimental.launch
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "1.1.0")
+@Mod(modid = "japanecraft", version = "1.1.1")
 class JapaneCraftMod {
-  private var kanjiConverter: KanjiConverter? = null
-  private lateinit var romajiConverter: RomajiConverter
-  private lateinit var dictionary: Dictionary
-  private lateinit var timeFormatter: DateFormat
-  private lateinit var variableExpander: VariableExpander
-
-  @Mod.EventHandler
-  fun preInit(event: FMLPreInitializationEvent) {
-    val configuration = Configuration.load()
-
-    romajiConverter = RomajiConverter(configuration.romajiTable)
-    dictionary = Dictionary(configuration.dictionary)
-    variableExpander = VariableExpander(configuration.chatMsgFormat)
-    timeFormatter = SimpleDateFormat(configuration.timeFormat)
-    if (configuration.kanjiConverterEnabled) kanjiConverter = KanjiConverter()
-  }
+  private val configuration = Configuration()
+  private val kanjiConverter = KanjiConverter()
 
   @Mod.EventHandler
   fun init(event: FMLInitializationEvent) {
@@ -50,12 +33,12 @@ class JapaneCraftMod {
           "n"                to "\n",
           "$"                to "\$",
           "username"         to event.username,
-          "time"             to timeFormatter.format(Date()),
+          "time"             to configuration.timeFormatter.format(Date()),
           "rawMessage"       to rawMessage,
           "convertedMessage" to convertedMessage
       )
 
-      variableExpander.expand(variableMap).split('\n').forEach {
+      configuration.variableExpander.expand(variableMap).split('\n').forEach {
         FMLCommonHandler
             .instance()
             .minecraftServerInstance
@@ -92,19 +75,23 @@ class JapaneCraftMod {
           .map {
             when (it.language) {
               Language.ENGLISH -> it
-              Language.ROMAJI  -> Chunk(romajiConverter.convert(it.word),
-                                        Language.HIRAGANA)
+
+              Language.ROMAJI -> {
+                Chunk(configuration.romajiConverter.convert(it.word),
+                      Language.HIRAGANA)
+              }
+
               else -> throw AssertionError()
             }
           }
-          .map { it.applyDictionary(dictionary) }
+          .map { it.applyDictionary(configuration.dictionary) }
           .flatten()
 
-      if (kanjiConverter != null) {
+      if (configuration.kanjiConverterEnabled) {
         val kanjiList = chunkList
             .filter { it.language == Language.HIRAGANA }
             .map { it.word }
-            .let { kanjiConverter!!.convert(it).await() }
+            .let { kanjiConverter.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
             .toMutableList()
 
