@@ -9,9 +9,11 @@ class RomajiConverter(romajiMap: Map<String, Output>) {
     fun StringBuffer.parseHeadRomaji(): String {
       val strBuffer = this
 
-      fun loop(strIdx: Int, trieNode: Trie<Output>): String {
-        fun confirm(): String {
-          val output = trieNode.value
+      fun loop(strIdx: Int, prevNode: Trie<Output>): String {
+        val node = prevNode[strBuffer[strIdx]]
+
+        fun confirm(strIdx: Int, node: Trie<Output>): String {
+          val output = node.value
 
           val jpStr = output?.jpChar ?: strBuffer.substring(0..strIdx)
 
@@ -21,22 +23,18 @@ class RomajiConverter(romajiMap: Map<String, Output>) {
           return jpStr
         }
 
-        if (trieNode.childCount == 0)      return confirm()
-        if (strIdx == strBuffer.lastIndex) return confirm()
-
-        val nextNode = trieNode[strBuffer[strIdx + 1]]
-
-        if (nextNode != null) {
-          return loop(strIdx + 1, nextNode)
-        } else {
-          return confirm()
+        return when {
+          node == null                  -> confirm(strIdx - 1, prevNode)
+          node.childCount == 0          -> confirm(strIdx, node)
+          strIdx == strBuffer.lastIndex -> confirm(strIdx, node)
+          else                          -> return loop(strIdx + 1, node)
         }
       }
 
       val trieNode = romajiTable[romajiBuffer.first()]
 
       if (trieNode != null) {
-        return loop(0, trieNode)
+        return loop(0, romajiTable)
       } else {
         val char = romajiBuffer.first()
         romajiBuffer.deleteCharAt(0)
