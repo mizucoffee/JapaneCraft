@@ -8,6 +8,16 @@ import kotlin.reflect.KProperty
 import net.minecraftforge.common.config.Configuration as ConfigLoader
 
 class Configuration {
+  val romajiRegex by autoReload(File("config/JapaneCraft.cfg")) {
+    val pattern = it.loadString(
+        category = "advanced",
+        key      = "romajiRegex",
+        default  = "\\d*[a-z].*",
+        comment = null)
+
+    Regex(pattern)
+  }
+
   val romajiConverter by autoReload(File("config/JapaneCraftRomajiTable.json")) {
     if (!it.exists()) it.writeText(defaultRomajiTableJson())
 
@@ -92,7 +102,7 @@ class Configuration {
   private fun File.loadString(category: String,
                               key: String,
                               default: String,
-                              comment: String): String
+                              comment: String?): String
       = with (ConfigLoader(this)) {
         load()
         val value = getString(key, category, default, comment)
@@ -103,7 +113,7 @@ class Configuration {
   private fun File.loadBoolean(category: String,
                                key: String,
                                default: Boolean,
-                               comment: String): Boolean
+                               comment: String?): Boolean
       = with (ConfigLoader(this)) {
         load()
         val value = getBoolean(key, category, default, comment)

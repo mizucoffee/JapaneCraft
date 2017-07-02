@@ -138,9 +138,9 @@ class JapaneCraftMod {
               .filter(String::isNotEmpty)
               .map { word ->
                 val language = when {
-                  isEnglishBlock             -> Language.ENGLISH
-                  word.first().isLowerCase() -> Language.ROMAJI
-                  else                       -> Language.ENGLISH
+                  isEnglishBlock                          -> Language.ENGLISH
+                  word.matches(configuration.romajiRegex) -> Language.ROMAJI
+                  else                                    -> Language.ENGLISH
                 }
 
                 Chunk(word, language)
