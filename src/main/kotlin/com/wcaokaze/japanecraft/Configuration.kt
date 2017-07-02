@@ -8,6 +8,25 @@ import kotlin.reflect.KProperty
 import net.minecraftforge.common.config.Configuration as ConfigLoader
 
 class Configuration {
+  val wordSeparators by autoReload(File("config/JapaneCraft.cfg")) {
+    it.loadString(
+        category = "advanced",
+        key = "wordSeparator",
+        default = "\t\n \"'()<>@[]{}",
+        comment = null)
+        .toCharArray()
+  }
+
+  val romajiRegex by autoReload(File("config/JapaneCraft.cfg")) {
+    val pattern = it.loadString(
+        category = "advanced",
+        key      = "romajiRegex",
+        default  = "\\d*[a-z].*",
+        comment = null)
+
+    Regex(pattern)
+  }
+
   val romajiConverter by autoReload(File("config/JapaneCraftRomajiTable.json")) {
     if (!it.exists()) it.writeText(defaultRomajiTableJson())
 
@@ -92,7 +111,7 @@ class Configuration {
   private fun File.loadString(category: String,
                               key: String,
                               default: String,
-                              comment: String): String
+                              comment: String?): String
       = with (ConfigLoader(this)) {
         load()
         val value = getString(key, category, default, comment)
@@ -103,7 +122,7 @@ class Configuration {
   private fun File.loadBoolean(category: String,
                                key: String,
                                default: Boolean,
-                               comment: String): Boolean
+                               comment: String?): Boolean
       = with (ConfigLoader(this)) {
         load()
         val value = getBoolean(key, category, default, comment)
@@ -166,9 +185,20 @@ class Configuration {
         { "input": "mm",         "output": "っ",       "next_input": "m"     },
         { "input": "yy",         "output": "っ",       "next_input": "y"     },
         { "input": "rr",         "output": "っ",       "next_input": "r"     },
-        { "input": "ww",         "output": "っ",       "next_input": "w"     },
-        { "input": "www",        "output": "w",        "next_input": "ww"    },
         { "input": "cc",         "output": "っ",       "next_input": "c"     },
+        { "input": "www",        "output": "w",        "next_input": "ww"    },
+        { "input": "wwu",        "output": "っう"                            },
+        { "input": "wwyi",       "output": "っゐ"                            },
+        { "input": "wwye",       "output": "っゑ"                            },
+        { "input": "wwa",        "output": "っわ"                            },
+        { "input": "wwi",        "output": "っうぃ"                          },
+        { "input": "wwe",        "output": "っうぇ"                          },
+        { "input": "wwo",        "output": "っを"                            },
+        { "input": "wwha",       "output": "っうぁ"                          },
+        { "input": "wwhi",       "output": "っうぃ"                          },
+        { "input": "wwhu",       "output": "っう"                            },
+        { "input": "wwhe",       "output": "っうぇ"                          },
+        { "input": "wwho",       "output": "っうぉ"                          },
         { "input": "kya",        "output": "きゃ"                            },
         { "input": "kyi",        "output": "きぃ"                            },
         { "input": "kyu",        "output": "きゅ"                            },

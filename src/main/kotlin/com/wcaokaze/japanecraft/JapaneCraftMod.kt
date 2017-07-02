@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "1.1.1")
+@Mod(modid = "japanecraft", version = "1.1.2")
 class JapaneCraftMod {
   private val configuration = Configuration()
   private val kanjiConverter = KanjiConverter()
@@ -134,13 +134,12 @@ class JapaneCraftMod {
           val isEnglishBlock = it.index % 2 != 0
 
           it.value
-              .split(' ')
-              .filter(String::isNotEmpty)
+              .split(configuration.wordSeparators)
               .map { word ->
                 val language = when {
-                  isEnglishBlock             -> Language.ENGLISH
-                  word.first().isLowerCase() -> Language.ROMAJI
-                  else                       -> Language.ENGLISH
+                  isEnglishBlock                          -> Language.ENGLISH
+                  word.matches(configuration.romajiRegex) -> Language.ROMAJI
+                  else                                    -> Language.ENGLISH
                 }
 
                 Chunk(word, language)
@@ -173,6 +172,26 @@ class JapaneCraftMod {
     loop(word)
 
     return convertedChunkList
+  }
+
+  private fun String.split(separators: CharArray): List<String> {
+    val splited = LinkedList<String>()
+
+    var i = 0
+
+    for (j in indices) {
+      if (this[j] in separators) {
+        if (j > i) splited += substring(i, j)
+
+        if (!this[j].isWhitespace()) splited += substring(j, j + 1)
+
+        i = j + 1
+      }
+    }
+
+    if (i < lastIndex) splited += substring(i)
+
+    return splited
   }
 
   private fun <T> ListIterator<T>.peekNextOrNull(): T? {
