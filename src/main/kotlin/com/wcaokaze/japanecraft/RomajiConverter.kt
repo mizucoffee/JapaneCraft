@@ -21,14 +21,8 @@ class RomajiConverter(romajiMap: Map<String, Output>) {
           return jpStr
         }
 
-        fun abort(): String {
-          val remainingChars = strBuffer.toString()
-          strBuffer.delete(0, strBuffer.length)
-          return remainingChars
-        }
-
         if (trieNode.childCount == 0)      return confirm()
-        if (strIdx == strBuffer.lastIndex) return abort()
+        if (strIdx == strBuffer.lastIndex) return confirm()
 
         val nextNode = trieNode[strBuffer[strIdx + 1]]
 
