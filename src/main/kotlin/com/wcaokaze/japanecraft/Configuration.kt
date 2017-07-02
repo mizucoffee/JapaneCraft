@@ -8,6 +8,15 @@ import kotlin.reflect.KProperty
 import net.minecraftforge.common.config.Configuration as ConfigLoader
 
 class Configuration {
+  val wordSeparators by autoReload(File("config/JapaneCraft.cfg")) {
+    it.loadString(
+        category = "advanced",
+        key = "wordSeparator",
+        default = "\t\n \"'()<>@[]{}",
+        comment = null)
+        .toCharArray()
+  }
+
   val romajiRegex by autoReload(File("config/JapaneCraft.cfg")) {
     val pattern = it.loadString(
         category = "advanced",
