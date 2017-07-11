@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "1.1.3")
+@Mod(modid = "japanecraft", version = "1.1.4")
 class JapaneCraftMod {
   private val configuration = Configuration()
   private val kanjiConverter = KanjiConverter()
@@ -89,33 +89,38 @@ class JapaneCraftMod {
 
       if (configuration.kanjiConverterEnabled) {
         val kanjiList = chunkList
-            .filter { it.language == Language.HIRAGANA }
+            .filter { it.language != Language.KANJI }
             .map { it.word }
             .let { kanjiConverter.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
             .toMutableList()
 
-        if (chunkList.count { it.language == Language.HIRAGANA }
+        if (chunkList.count { it.language != Language.KANJI }
             != kanjiList.size)
         {
           throw JsonParseException()
         }
 
-        val chunkListIterator = chunkList.listIterator()
+        val convertedWordList = chunkList.map {
+          if (it.language == Language.KANJI) it.word else kanjiList.removeAt(0)
+        }.filter(String::isNotEmpty)
+
+        val iterator = convertedWordList.listIterator()
 
         return buildString {
-          for ((word, language) in chunkListIterator) {
-            when (language) {
-              Language.HIRAGANA -> append(kanjiList.removeAt(0))
+          while (iterator.hasNext()) {
+            val word     = iterator.next()
+            val nextWord = iterator.peekNextOrNull()
 
-              else -> {
-                append(word)
+            append(word)
 
-                val nextLanguage = chunkListIterator.peekNextOrNull()?.language
+            fun Char.isAlphabet() = this in 'a'..'z' || this in 'A'..'Z'
 
-                if (language     == Language.ENGLISH &&
-                    nextLanguage == Language.ENGLISH) append(' ')
-              }
+            if (nextWord != null &&
+                word[word.lastIndex].isAlphabet() &&
+                nextWord[0].isAlphabet())
+            {
+              append(' ')
             }
           }
         }
