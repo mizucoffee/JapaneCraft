@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ServerChatEvent
 import java.util.*
 
-@Mod(modid = "japanecraft", version = "1.1.4")
+@Mod(modid = "japanecraft", version = "1.1.5")
 class JapaneCraftMod {
   private val configuration = Configuration()
   private val kanjiConverter = KanjiConverter()
@@ -88,22 +88,16 @@ class JapaneCraftMod {
           .flatten()
 
       if (configuration.kanjiConverterEnabled) {
-        val kanjiList = chunkList
-            .filter { it.language != Language.KANJI }
+        val convertedWordList = chunkList
             .map { it.word }
             .let { kanjiConverter.convert(it).await() }
             .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
-            .toMutableList()
-
-        if (chunkList.count { it.language != Language.KANJI }
-            != kanjiList.size)
-        {
-          throw JsonParseException()
-        }
-
-        val convertedWordList = chunkList.map {
-          if (it.language == Language.KANJI) it.word else kanjiList.removeAt(0)
-        }.filter(String::isNotEmpty)
+            .zip(chunkList)
+            .map { (googledWord, rawChunk) ->
+              if (rawChunk.language == Language.HIRAGANA)
+                googledWord else rawChunk.word
+            }
+            .filter(String::isNotEmpty)
 
         val iterator = convertedWordList.listIterator()
 
