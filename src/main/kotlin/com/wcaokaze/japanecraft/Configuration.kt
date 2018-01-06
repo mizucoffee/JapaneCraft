@@ -1,10 +1,13 @@
 package com.wcaokaze.japanecraft
 
-import com.wcaokaze.json.*
+import org.j2on.kotlin.JsonParser
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import kotlin.reflect.KProperty
+import kotlin.reflect.KTypeProjection
+import kotlin.reflect.KVariance
+import kotlin.reflect.full.createType
 import net.minecraftforge.common.config.Configuration as ConfigLoader
 
 class Configuration {
@@ -28,20 +31,16 @@ class Configuration {
   }
 
   val romajiConverter by autoReload(File("config/JapaneCraftRomajiTable.json")) {
-    if (!it.exists()) it.writeText(defaultRomajiTableJson())
+    if (!it.exists()) {
+      it.writeText(DEFAULT_ROMAJI_TABLE_JSON)
+    }
 
     class RomajiTableEntry(val input: String,
                            val output: String,
                            val nextInput: String)
 
-    val romajiTableEntry = instance {
-      RomajiTableEntry(it["input", string],
-                       it["output", string],
-                       it["next_input", string, ""])
-    }
-
-    val romajiTableMap =
-        loadJson(it, list(romajiTableEntry), defaultRomajiTableJson)
+    val romajiTableMap = JsonParser()
+        .parseList<RomajiTableEntry>(it.bufferedReader())
         .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
         .toMap()
 
@@ -49,8 +48,8 @@ class Configuration {
   }
 
   val dictionary by autoReload(File("config/JapaneCraftDictionary.json")) {
-    val dictionaryMap =
-        loadJson(File("config/JapaneCraftDictionary.json"), map(string)) {
+    if (!it.exists()) {
+      it.writeText(
           """
             {
               "いし": "石",
@@ -59,7 +58,16 @@ class Configuration {
               "つるはし": "ツルハシ"
             }
           """.trimIndent()
-        }
+      )
+    }
+
+    val mapType = Map::class.createType(listOf(
+        KTypeProjection(KVariance.INVARIANT, String::class.createType()),
+        KTypeProjection(KVariance.OUT,       String::class.createType())))
+
+    @Suppress("UNCHECKED_CAST")
+    val dictionaryMap
+        = JsonParser().parse(it.bufferedReader(), mapType) as Map<String, String>
 
     Dictionary(dictionaryMap)
   }
@@ -133,16 +141,7 @@ class Configuration {
         return value
       }
 
-  private fun <T> loadJson(file: File,
-                           jsonConverter: JsonConverter<T>,
-                           defaultLazy: () -> String): T
-  {
-    if (!file.exists()) file.writeText(defaultLazy())
-
-    return file.reader().buffered().use { parseJson(it, jsonConverter) }
-  }
-
-  private val defaultRomajiTableJson = { """
+  private val DEFAULT_ROMAJI_TABLE_JSON = """
       [
         { "input": "-",          "output": "ー"                              },
         { "input": "~",          "output": "〜"                              },
@@ -468,5 +467,5 @@ class Configuration {
         { "input": "whe",        "output": "うぇ"                            },
         { "input": "who",        "output": "うぉ"                            }
       ]
-  """.trimIndent() }
+  """.trimIndent()
 }

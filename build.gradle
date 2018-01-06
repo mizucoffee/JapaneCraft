@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.2-3'
+    ext.kotlin_version = '1.2.10'
     repositories {
         mavenCentral()
         maven {
@@ -31,7 +31,8 @@ minecraft {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.16"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21"
     compile fileTree(dir: 'lib', include: ['*.jar'])
     testCompile 'junit:junit:4.+'
     // you may put jars on which you depend on in ./libs

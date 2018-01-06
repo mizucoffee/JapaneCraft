@@ -1,13 +1,11 @@
 package com.wcaokaze.japanecraft
 
-import com.wcaokaze.json.JsonParseException
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import cpw.mods.fml.common.network.NetworkCheckHandler
 import cpw.mods.fml.relauncher.Side
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.common.MinecraftForge
@@ -26,7 +24,7 @@ class JapaneCraftMod {
 
   @SubscribeEvent
   fun onServerChat(event: ServerChatEvent) {
-    launch (CommonPool) {
+    launch {
       val (rawMessage, convertedMessage) = convert(event.message)
 
       val variableMap = mapOf(
@@ -91,11 +89,14 @@ class JapaneCraftMod {
         val convertedWordList = chunkList
             .map { it.word }
             .let { kanjiConverter.convert(it).await() }
-            .map { it.kanjiList.firstOrNull() ?: throw JsonParseException() }
+            .map { it.kanjiList.firstOrNull() ?: "" }
             .zip(chunkList)
             .map { (googledWord, rawChunk) ->
-              if (rawChunk.language == Language.HIRAGANA)
-                googledWord else rawChunk.word
+              if (rawChunk.language == Language.HIRAGANA) {
+                googledWord
+              } else {
+                rawChunk.word
+              }
             }
             .filter(String::isNotEmpty)
 
@@ -119,7 +120,7 @@ class JapaneCraftMod {
           }
         }
       } else {
-        return chunkList.map { it.word }.joinToString(" ")
+        return chunkList.joinToString(" ") { it.word }
       }
     } catch (e: Exception) {
       return this
