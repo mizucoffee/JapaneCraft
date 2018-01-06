@@ -85,42 +85,42 @@ class JapaneCraftMod {
           .map { it.applyDictionary(configuration.dictionary) }
           .flatten()
 
-      if (configuration.kanjiConverterEnabled) {
-        val convertedWordList = chunkList
-            .map { it.word }
-            .let { kanjiConverter.convert(it).await() }
-            .map { it.kanjiList.firstOrNull() ?: "" }
-            .zip(chunkList)
-            .map { (googledWord, rawChunk) ->
-              if (rawChunk.language == Language.HIRAGANA) {
-                googledWord
-              } else {
-                rawChunk.word
-              }
-            }
-            .filter(String::isNotEmpty)
+      if (!configuration.kanjiConverterEnabled) {
+        return chunkList.joinToString(" ") { it.word }
+      }
 
-        val iterator = convertedWordList.listIterator()
-
-        return buildString {
-          while (iterator.hasNext()) {
-            val word     = iterator.next()
-            val nextWord = iterator.peekNextOrNull()
-
-            append(word)
-
-            fun Char.isAlphabet() = this in 'a'..'z' || this in 'A'..'Z'
-
-            if (nextWord != null &&
-                word[word.lastIndex].isAlphabet() &&
-                nextWord[0].isAlphabet())
-            {
-              append(' ')
+      val convertedWordList = chunkList
+          .map { it.word }
+          .let { kanjiConverter.convert(it).await() }
+          .map { it.kanjiList.firstOrNull() ?: "" }
+          .zip(chunkList)
+          .map { (googledWord, rawChunk) ->
+            if (rawChunk.language == Language.HIRAGANA) {
+              googledWord
+            } else {
+              rawChunk.word
             }
           }
+          .filter(String::isNotEmpty)
+
+      val iterator = convertedWordList.listIterator()
+
+      return buildString {
+        while (iterator.hasNext()) {
+          val word     = iterator.next()
+          val nextWord = iterator.peekNextOrNull()
+
+          append(word)
+
+          fun Char.isAlphabet() = this in 'a'..'z' || this in 'A'..'Z'
+
+          if (nextWord != null &&
+              word[word.lastIndex].isAlphabet() &&
+              nextWord[0].isAlphabet())
+          {
+            append(' ')
+          }
         }
-      } else {
-        return chunkList.joinToString(" ") { it.word }
       }
     } catch (e: Exception) {
       return this

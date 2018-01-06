@@ -1,6 +1,8 @@
 package com.wcaokaze.japanecraft
 
 import org.j2on.kotlin.JsonParser
+import org.j2on.kotlin.LOWER_CAMEL_CASE
+import org.j2on.kotlin.LOWER_SNAKE_CASE
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -37,9 +39,10 @@ class Configuration {
 
     class RomajiTableEntry(val input: String,
                            val output: String,
-                           val nextInput: String)
+                           val nextInput: String = "")
 
     val romajiTableMap = JsonParser()
+        .keyMapper(json = LOWER_SNAKE_CASE, kotlin = LOWER_CAMEL_CASE)
         .parseList<RomajiTableEntry>(it.bufferedReader())
         .map { it.input to RomajiConverter.Output(it.output, it.nextInput) }
         .toMap()

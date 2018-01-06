@@ -49,5 +49,5 @@ class RomajiConverter(romajiMap: Map<String, Output>) {
     }
   }
 
-  class Output(val jpChar: String, val nextInput: String = "")
+  class Output(val jpChar: String, val nextInput: String)
 }
