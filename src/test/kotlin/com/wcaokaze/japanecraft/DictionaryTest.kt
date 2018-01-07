@@ -12,10 +12,10 @@ class DictionaryTest {
       "あおかぜ" to "碧風"
   ))
 
-  @Test fun simple()      = assert(dictionary["あか"]       == "赤"   to 0..1)
-  @Test fun notFound()    = assert(dictionary["あい"]       == null)
-  @Test fun halfOnTrie()  = assert(dictionary["あお"]       == "青"   to 0..1)
-  @Test fun full()        = assert(dictionary["あおかぜ"]   == "碧風" to 0..3)
-  @Test fun overrun()     = assert(dictionary["あおかぜの"] == "碧風" to 0..3)
-  @Test fun complicated() = assert(dictionary["あおい"]     == "青"   to 0..1)
+  @Test fun simple()      = assert(dictionary("あか")       == "赤")
+  @Test fun notFound()    = assert(dictionary("あい")       == "あい")
+  @Test fun halfOnTrie()  = assert(dictionary("あお")       == "青")
+  @Test fun full()        = assert(dictionary("あおかぜ")   == "碧風")
+  @Test fun overrun()     = assert(dictionary("あおかぜの") == "碧風")
+  @Test fun complicated() = assert(dictionary("あおい")     == "青")
 }
