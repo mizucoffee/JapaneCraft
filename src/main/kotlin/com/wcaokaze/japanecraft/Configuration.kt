@@ -18,7 +18,7 @@ object Configuration {
     it.loadString(
         category = "advanced",
         key      = "wordSeparator",
-        default  = "\t\n \"'()<>@[]{}",
+        default  = "\t \"'()<>@[]{}",
         comment  = null)
         .toCharArray()
   }
