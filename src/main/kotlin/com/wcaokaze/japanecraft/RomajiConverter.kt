@@ -3,7 +3,7 @@ package com.wcaokaze.japanecraft
 class RomajiConverter(romajiMap: Map<String, Output>) {
   private val romajiTable = romajiMap.toTrie()
 
-  fun convert(romajiStr: String): String {
+  operator fun invoke(romajiStr: String): String {
     val romajiBuffer = StringBuffer(romajiStr)
 
     fun StringBuffer.parseHeadRomaji(): String {

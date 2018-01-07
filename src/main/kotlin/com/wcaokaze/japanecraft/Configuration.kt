@@ -6,13 +6,14 @@ import org.j2on.kotlin.LOWER_SNAKE_CASE
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.reflect.KProperty
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
 import kotlin.reflect.full.createType
 import net.minecraftforge.common.config.Configuration as ConfigLoader
 
-class Configuration {
+object Configuration {
   val wordSeparators by autoReload(File("config/JapaneCraft.cfg")) {
     it.loadString(
         category = "advanced",
@@ -20,6 +21,28 @@ class Configuration {
         default  = "\t\n \"'()<>@[]{}",
         comment  = null)
         .toCharArray()
+  }
+
+  fun splitWords(str: String): List<String> {
+    val words = LinkedList<String>()
+
+    var i = 0
+
+    for (j in str.indices) {
+      if (str[j] in wordSeparators) {
+        if (j > i) {
+          words += str.substring(i, j)
+        }
+
+        words += str.substring(j, j + 1)
+
+        i = j + 1
+      }
+    }
+
+    if (i < str.length) words += str.substring(i)
+
+    return words
   }
 
   val romajiRegex by autoReload(File("config/JapaneCraft.cfg")) {
