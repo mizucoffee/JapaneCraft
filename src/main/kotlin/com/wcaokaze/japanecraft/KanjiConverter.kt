@@ -18,6 +18,10 @@ class KanjiConverter {
           }
         }
         .flatten()
+        .map { it.splitByComma() }
+        .flatten()
+        .substitute(",", "，")
+
         // Google's bug?
         // The server fails when it receives Strings like "wwwwwwwww".
         .map(::minceKusa)
@@ -100,6 +104,20 @@ class KanjiConverter {
     return wordTypeList.joinToString("") { (_, word) -> word }
   }
 
+  private fun <T> Sequence<T>.substitute(a: T, b: T) = Sequence {
+    object : Iterator<T> {
+      private val itr = this@substitute.iterator()
+
+      override fun hasNext() = itr.hasNext()
+
+      override fun next(): T {
+        val next = itr.next()
+
+        return if (next == a) b else next
+      }
+    }
+  }
+
   private fun <T> ListIterator<T>.find(condition: (T) -> Boolean): T? {
     while (hasNext()) {
       val next = next()
@@ -128,6 +146,28 @@ class KanjiConverter {
         return
       }
     }
+  }
+
+  private fun String.splitByComma(): List<String> {
+    val words = LinkedList<String>()
+
+    var i = 0
+
+    for (j in indices) {
+      if (this[j] == ',') {
+        if (j > i) {
+          words += substring(i, j)
+        }
+
+        words += ","
+
+        i = j + 1
+      }
+    }
+
+    if (i < length) words += substring(i)
+
+    return words
   }
 
   private fun minceKusa(str: String): List<String> {
