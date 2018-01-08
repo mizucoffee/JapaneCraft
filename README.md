@@ -1,23 +1,46 @@
-# JapaneCraft
-JapaneCraft is Japanese input support Mod!   
-JapaneCraftは日本語入力をサポートするmodです。
 
-## 概要
-日本語modです。   
-ローマ字で送信した単語の後に()をつけてひらがなで読みをつけます。   
-https://github.com/aki017/JapanizeChat   
-↑こちらのpluginのForge版といったところです。   
-このmodは、 **サーバー専用mod** です。   
-クライアント対応も検討していましたが、一度したチャットを削除してから投稿し直すという仕組み上、あまりよろしくないとの判断にてクライアント対応は現在していません。   
-ただし、対応しようと思えば出来るとは思います。   
+概要
+--------------------------------------------------------------------------------
+[KawakawaRitsuki様のプロジェクト](https://github.com/KawakawaRitsuki/JapaneCraft)
+からforkしたものです。  
+Forgeサーバーに導入することで、チャットのローマ字を日本語に変換します。
 
-## mod名が読めない問題
-ジャパネクラフトでもジャパインクラフトでもジャパクラでも適当に読んでもらっていいです（）   
-正直自分も読み方がよくわからないです...笑
+設定
+--------------------------------------------------------------------------------
+### JapaneCraft.cfg
 
-## 感謝
-http://www.hi-ho.ne.jp/m-wata/Kana/   
-こちらのKanaクラスを使わせて頂いています。
+- format.S:chat
 
-## License
-[MIT](http://kawakawaritsuki.mit-license.org) (c) [@KawakawaRitsuki](http://github.com/KawakawaRitsuki)
+    チャットの表示フォーマット。
+
+    | 変数                  | 概要                                              |
+    | :-------------------- | :-----------------------------------------------  |
+    | `$username`           | 発言者の名前。                                    |
+    | `$time`               | 発言した時間。                                    |
+    | `$rawMessage`         | 発言内容。`$convertedMessage`と一致する場合は空。 |
+    | `$convertedMessage`   | 日本語に変換された文字列。                        |
+    | `$n`                  | 改行コード。U+000a。                              |
+    | `$$`                  | '$'。 U+0024。                                    |
+
+    デフォルト値は`<$username> $rawMessage$n  §b$convertedMessage`。
+
+- format.S:time
+
+    時刻の表示フォーマット。`java.text.SimpleDateFormat`参照。
+
+- mode.B:enableConvertingToKanji
+
+    漢字への変換を利用するかどうか。
+
+### JapaneCraftRomajiTable.json
+
+ローマ字テーブル。
+
+### JapaneCraftDictionary.json
+
+辞書。漢字変換がうまくいかないときにご活用ください。
+
+License
+--------------------------------------------------------------------------------
+MIT. See [LICENSE](LICENSE).
+
