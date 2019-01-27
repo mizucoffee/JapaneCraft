@@ -1,4 +1,5 @@
-# JapaneCraft
+# 【DEPRECATED】JapaneCraft
+## 後継プロジェクト -> https://github.com/wcaokaze/JapaneCraft
 
 概要
 --------------------------------------------------------------------------------
